@@ -3,13 +3,13 @@ package com.es.core.service;
 import com.es.core.dao.PhoneDao;
 import com.es.core.dao.StockDao;
 import com.es.core.exception.OutOfStockException;
-import com.es.core.exception.PhoneNotFoundException;
+import com.es.core.exception.ProductNotFoundException;
 import com.es.core.model.cart.Cart;
 import com.es.core.model.cart.CartItem;
 import com.es.core.model.phone.Color;
 import com.es.core.model.phone.Phone;
 import com.es.core.model.phone.Stock;
-import com.es.core.service.impl.HttpSessionCartService;
+import com.es.core.service.impl.SessionCartService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,10 +25,19 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class HttpSessionCartServiceTest {
+public class SessionCartServiceTest {
+    private static final Integer STOCK = 10;
+    private static final Integer RESERVED = 1;
+    private static final Long QUANTITY = 1L;
+    private static final int COUNT_ITEMS = 1;
+    private static final String TEXT_FOR_PHONE = "text";
+    private static final Long PHONE_ID = 10L;
+    private static final Long[] ColorIds = {1000L, 1001L, 1002L, 1003L, 1004L, 1005L, 1006L, 1007L, 1008L, 1009L, 1010L, 1011L, 1012L, 1013L};
+    private static final String[] ColorCodes = {"Black", "White", "Yellow", "Blue", "Red", "Purple", "Gray", "Green", "Pink", "Gold",
+            "Silver", "Orange", "Brown", "256"};
 
     @InjectMocks
-    private CartService cartService = new HttpSessionCartService();
+    private CartService cartService = new SessionCartService();
 
     @Mock
     private Cart mockCart;
@@ -44,15 +53,7 @@ public class HttpSessionCartServiceTest {
     private List<CartItem> cartItemsList;
     private List<Phone> phoneList;
     private List<Stock> stockList;
-    private static List<Color> colorList;
-
-    final static Long QUANTITY = 1L;
-    final static int COUNT_ITEMS = 1;
-    private static final String TEXT_FOR_PHONE = "text";
-    private static final Long PHONE_ID = 10L;
-    private Long[] ColorIds = {1000L, 1001L, 1002L, 1003L, 1004L, 1005L, 1006L, 1007L, 1008L, 1009L, 1010L, 1011L, 1012L, 1013L};
-    private String[] ColorCodes = {"Black", "White", "Yellow", "Blue", "Red", "Purple", "Gray", "Green", "Pink", "Gold",
-            "Silver", "Orange", "Brown", "256"};
+    private List<Color> colorList;
 
     @Before
     public void init() {
@@ -67,9 +68,7 @@ public class HttpSessionCartServiceTest {
 
     private void initStockList() {
         stockList = new ArrayList<>();
-        for (int i = 1; i < phoneList.size() - 1; i++) {
-            stockList.add(new Stock(phoneList.get(i), 10 + i, i));
-        }
+        phoneList.stream().forEach(phone -> stockList.add(new Stock(phone, STOCK, RESERVED)));
     }
 
     private void initStockDao() {
@@ -126,8 +125,8 @@ public class HttpSessionCartServiceTest {
 
 
     @Test
-    public void shouldAddPhoneCorrectly() throws Exception {
-        int FINAL_QUANTITY = 2;
+    public void shouldAddPhoneCorrectly() {
+        int finalQuantity = 2;
         Phone phone = phoneList.get(1);
 
         cartService.addPhone(phone.getId(), QUANTITY);
@@ -135,18 +134,18 @@ public class HttpSessionCartServiceTest {
         verify(mockPhoneDao).get(eq(phone.getId()));
         verify(mockCart).setTotalPrice(eq(phone.getPrice()));
         verify(mockCart).setTotalQuantity(eq(QUANTITY));
-        verify(mockStockDao).update(phone.getId(), FINAL_QUANTITY);
+        verify(mockStockDao).update(phone.getId(), finalQuantity);
 
         assertEquals(COUNT_ITEMS, cartItemsList.size());
     }
 
     @Test
-    public void shouldAddPhoneWhichIsInAlreadyCartCorrectly() throws Exception {
+    public void shouldAddPhoneWhichIsInAlreadyCartCorrectly() {
         Phone phone = phoneList.get(1);
 
-        Long FINAL_QUANTITY = QUANTITY * 2;
-        BigDecimal FINAL_PRICE = phone.getPrice().multiply(new BigDecimal(2));
-        int FINAL_COUNT_ITEMS = COUNT_ITEMS * 2;
+        Long finalQuantity = QUANTITY * 2;
+        BigDecimal finalPrice = phone.getPrice().multiply(new BigDecimal(2));
+        int finalCountItems = COUNT_ITEMS * 2;
 
         cartService.addPhone(phone.getId(), QUANTITY);
         cartService.addPhone(phone.getId(), QUANTITY);
@@ -156,16 +155,16 @@ public class HttpSessionCartServiceTest {
         verify(mockCart).setTotalPrice(eq(phone.getPrice()));
         verify(mockCart).setTotalQuantity(eq(QUANTITY));
 
-        verify(mockCart).setTotalPrice(eq(FINAL_PRICE));
-        verify(mockCart).setTotalQuantity(eq(FINAL_QUANTITY));
+        verify(mockCart).setTotalPrice(eq(finalPrice));
+        verify(mockCart).setTotalQuantity(eq(finalQuantity));
 
-        verify(mockStockDao).update(phone.getId(), FINAL_COUNT_ITEMS);
+        verify(mockStockDao).update(phone.getId(), finalCountItems);
 
         assertEquals(COUNT_ITEMS, cartItemsList.size());
     }
 
-    @Test(expected = PhoneNotFoundException.class)
-    public void shouldThrowPhoneNotFoundExceptionWhenAddNotExistingPhone() throws Exception {
+    @Test(expected = ProductNotFoundException.class)
+    public void shouldThrowPhoneNotFoundExceptionWhenAddNotExistingPhone() {
         Phone phone = new Phone();
         phone.setId(100L);
 
@@ -173,19 +172,20 @@ public class HttpSessionCartServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentExceptionWhenAddPhoneWithNullPrice() throws Exception {
+    public void shouldThrowIllegalArgumentExceptionWhenAddPhoneWithNullPrice() {
         cartService.addPhone(phoneWithoutPrice.getId(), QUANTITY);
     }
 
-    @Test(expected = PhoneNotFoundException.class)
-    public void shouldThrowPhoneNotFoundExceptionWhenAddPhoneWithoutStock() throws Exception {
-        Phone phone = phoneList.get(0);
+    @Test(expected = ProductNotFoundException.class)
+    public void shouldThrowPhoneNotFoundExceptionWhenAddPhoneWithoutStock() {
+        Phone phone = new Phone();
+        phone.setId(2000L);
 
         cartService.addPhone(phone.getId(), QUANTITY);
     }
 
     @Test(expected = OutOfStockException.class)
-    public void shouldThrowOutOfStockExceptionWhenAddPhoneOutOfStock() throws Exception {
+    public void shouldThrowOutOfStockExceptionWhenAddPhoneOutOfStock() {
         Phone phone = phoneList.get(1);
 
         cartService.addPhone(phone.getId(), 100L);
@@ -193,21 +193,21 @@ public class HttpSessionCartServiceTest {
 
     @Test
     public void shouldRemovePhoneCorrectly() {
-        BigDecimal FINAL_PRICE = new BigDecimal(200);
-        Long FINAL_QUANTITY = 2L;
-        int EXPECTED_SIZE = 2;
+        BigDecimal finalPrice = new BigDecimal(200);
+        Long finalQuantity = 2L;
+        int expectedSize = 2;
         List<CartItem> cartItems = initNotEmptyCart();
 
         Phone phone = phoneList.get(2);
 
         cartService.remove(phone.getId());
 
-        verify(mockCart).setTotalPrice(eq(FINAL_PRICE));
-        verify(mockCart).setTotalQuantity(eq(FINAL_QUANTITY));
+        verify(mockCart).setTotalPrice(eq(finalPrice));
+        verify(mockCart).setTotalQuantity(eq(finalQuantity));
         verify(mockStockDao).getStockById(phone.getId());
-        verify(mockStockDao).update(phone.getId(), 1);
+        verify(mockStockDao).update(phone.getId(), 0);
 
-        assertEquals(EXPECTED_SIZE, cartItems.size());
+        assertEquals(expectedSize, cartItems.size());
     }
 
     @Test
@@ -222,7 +222,7 @@ public class HttpSessionCartServiceTest {
     }
 
     @Test
-    public void shouldUpdateCartCorrectly() throws Exception {
+    public void shouldUpdateCartCorrectly() {
         List<CartItem> cartItems = initNotEmptyCart();
 
         Map<Long, Long> items = new HashMap<>();

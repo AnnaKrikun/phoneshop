@@ -20,10 +20,6 @@ public class CartPageController {
 
     @RequestMapping(method = RequestMethod.PUT)
     public void updateCart() {
-        try {
             cartService.update(null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

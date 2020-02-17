@@ -3,16 +3,16 @@ package com.es.phoneshop.web.service.impl;
 import com.es.core.dao.PhoneDao;
 import com.es.core.model.phone.Phone;
 import com.es.phoneshop.web.page.Pagination;
-import com.es.phoneshop.web.page.PhonePage;
+import com.es.phoneshop.web.page.ProductListPage;
 import com.es.phoneshop.web.service.PageService;
-import com.es.phoneshop.web.service.PhonePageService;
+import com.es.phoneshop.web.service.ProductPageService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
 
 @Service
-public class PhonePageServiceImpl implements PhonePageService {
+public class ProductPageServiceImpl implements ProductPageService {
     @Resource
     private PageService pageService;
 
@@ -20,7 +20,7 @@ public class PhonePageServiceImpl implements PhonePageService {
     private PhoneDao phoneDao;
 
     @Override
-    public PhonePage getPhonePage(String searchQuery, String sort, String order, int pageNumber) {
+    public ProductListPage getPhonePage(String searchQuery, String sort, String order, int pageNumber) {
         int itemsNumber = countPhonesByQuery(searchQuery);
         int normalizedPageNumber = pageService.normalizedPageNumber(itemsNumber, pageNumber);
 
@@ -31,7 +31,7 @@ public class PhonePageServiceImpl implements PhonePageService {
 
         Pagination pagination = pageService.getPagination(itemsNumber, pageNumber);
 
-        return new PhonePage(phoneList, pagination);
+        return new ProductListPage(phoneList, pagination);
     }
 
     private List<Phone> getPhoneList(String searchQuery, String sort, String order, int offset, int limit) {

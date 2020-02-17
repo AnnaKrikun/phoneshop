@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -30,7 +31,6 @@ public class JdbcPhoneDaoTest {
     private static final Long ZERO = 0L;
     private static final String ERROR_IN_FIND_ALL_PHONES = "Error: Number of found / expected phones = ";
     private static final int OFFSET_OUT_OF_RANGE = 100;
-    private static final int AMOUNT_OF_PHONES_IN_DB = 10;
     private static final int LIMIT_OUT_OF_RANGE_POSITIVE = 100;
     private static final int LIMIT_ZERO = 0;
     private static final int OFFSET_ZERO = 0;

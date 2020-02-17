@@ -1,9 +1,7 @@
-package com.es.core.model.cart;
+package com.es.phoneshop.web.cart;
 
 public class CartItemStringData {
-
     private String phoneIdString;
-
     private String quantityString;
 
     public CartItemStringData() {

@@ -3,6 +3,7 @@ package com.es.core.configurer;
 import com.es.core.model.phone.Phone;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,15 +12,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class PhoneListResultSetExtractor extends PhoneResultExtractor implements ResultSetExtractor<List<Phone>> {
-    private static final String PHONE_ID = "phoneId";
 
     @Override
     public List<Phone> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
         Map<Long, Phone> phoneMap = new HashMap<>();
         List<Phone> phoneList = new ArrayList<>();
         while (resultSet.next()) {
-            Long phoneId = resultSet.getLong(PHONE_ID);
+            Long phoneId = resultSet.getLong(FieldConstants.PHONE_FIELD_NAMES[25]);
             Phone changePhone = phoneMap.get(phoneId);
             if (changePhone == null) {
                 changePhone = readPropertiesToPhone(resultSet);

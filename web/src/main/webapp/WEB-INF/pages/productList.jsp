@@ -19,21 +19,21 @@
         <tr>
             <th scope="col">Image</th>
             <th scope="col">Brand
-                <tags:sortAsc sort="brand"/>
-                <tags:sortDesc sort="brand"/>
+                <tags:sort sort="brand" order="asc"/>
+                <tags:sort sort="brand" order="desc"/>
             </th>
             <th scope="col">Model
-                <tags:sortAsc sort="model"/>
-                <tags:sortDesc sort="model"/>
+                <tags:sort sort="model" order="asc"/>
+                <tags:sort sort="model" order="desc"/>
             </th>
             <th scope="col">Color</th>
             <th scope="col">Display size
-                <tags:sortAsc sort="displaySizeInches"/>
-                <tags:sortDesc sort="displaySizeInches"/>
+                <tags:sort sort="displaySizeInches" order="asc"/>
+                <tags:sort sort="displaySizeInches" order="desc"/>
             </th>
             <th scope="col">Price
-                <tags:sortAsc sort="price"/>
-                <tags:sortDesc sort="price"/>
+                <tags:sort sort="price" order="asc"/>
+                <tags:sort sort="price" order="desc"/>
             </th>
             <th scope="col">Quantity</th>
             <th scope="col">Action</th>

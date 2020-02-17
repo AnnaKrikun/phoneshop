@@ -1,21 +1,22 @@
 package com.es.phoneshop.web.controller;
 
-import com.es.core.exception.PhoneNotFoundException;
-import com.es.core.model.cart.CartItemStringData;
-import com.es.core.model.cart.CartStatus;
+import com.es.core.exception.ProductNotFoundException;
 import com.es.core.service.CartService;
+import com.es.phoneshop.web.cart.CartItemStringData;
+import com.es.phoneshop.web.cart.CartStatus;
+import com.es.phoneshop.web.errors.ErrorMessageCreator;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
-@RestController
+@Controller
 @RequestMapping(value = "/ajaxCart", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class AjaxCartController {
     private static final String SUCCESS = "Added successfully!";
@@ -23,6 +24,8 @@ public class AjaxCartController {
 
     @Resource
     private CartService cartService;
+    @Resource
+    private ErrorMessageCreator errorMessageCreator;
 
     private final Validator cartItemStringDataValidator;
 
@@ -30,37 +33,23 @@ public class AjaxCartController {
         this.cartItemStringDataValidator = cartItemStringDataValidator;
     }
 
-    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
+    @PostMapping(produces = "application/json")
     public @ResponseBody
-    CartStatus addPhone(@RequestBody @Valid CartItemStringData cartItemStringData, BindingResult bindingResult) throws Exception {
+    CartStatus addPhone(@RequestBody @Valid CartItemStringData cartItemStringData, BindingResult bindingResult) {
         cartItemStringDataValidator.validate(cartItemStringData, bindingResult);
         if (!bindingResult.hasErrors()) {
             Long[] cartItemLongData = getLongValues(cartItemStringData);
             cartService.addPhone(cartItemLongData[0], cartItemLongData[1]);
             return createCartStatus(true, null, SUCCESS);
         }
-        String error = createErrorMessage(bindingResult);
+        String error = errorMessageCreator.createErrorMessage(bindingResult);
         return createCartStatus(false, error, null);
     }
 
-    @ExceptionHandler({InvalidFormatException.class,
-            PhoneNotFoundException.class,
-            IllegalStateException.class})
+    @ExceptionHandler({InvalidFormatException.class, ProductNotFoundException.class, IllegalStateException.class})
     public @ResponseBody
     CartStatus handleException() {
         return createCartStatus(false, ERROR, null);
-    }
-
-
-    private String createErrorMessage(BindingResult bindingResult) {
-        String errorMessage = "";
-        for (Object object : bindingResult.getAllErrors()) {
-            if (object instanceof FieldError) {
-                FieldError fieldError = (FieldError) object;
-                errorMessage += fieldError.getCode() + '\n';
-            }
-        }
-        return errorMessage;
     }
 
     private CartStatus createCartStatus(boolean valid, String error, String success) {

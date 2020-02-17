@@ -8,23 +8,18 @@ import java.util.Map;
 
 @Component
 public class PhoneParametersPreparer {
-    private static final String[] FIELD_NAMES = {"brand", "model", "price", "displaySizeInches", "weightGr",
-            "lengthMm", "widthMm", "heightMm", "announced", "deviceType", "os", "displayResolution", "pixelDensity",
-            "displayTechnology", "backCameraMegapixels", "frontCameraMegapixels", "ramGb", "internalStorageGb",
-            "batteryCapacityMah", "talkTimeHours", "standByTimeHours", "bluetooth", "positioning", "imageUrl",
-            "description", "id"};
 
     public Map<String, Object> fillMapForSaving(Phone phone) {
         Map<String, Object> map = new HashMap<>();
         Object[] phoneParameters = getPreparedParameters(phone);
-        for (int i=0; i<FIELD_NAMES.length; i++){
-            map.put(FIELD_NAMES[i], phoneParameters[i]);
+        for (int i = 0; i < FieldConstants.FIELD_AMOUNT; i++) {
+            map.put(FieldConstants.PHONE_FIELD_NAMES[i], phoneParameters[i]);
         }
         return map;
     }
 
     public Object[] getPreparedParameters(Phone phone) {
-        Object[] preparedParameters = new Object[26];
+        Object[] preparedParameters = new Object[FieldConstants.FIELD_AMOUNT];
         preparedParameters[0] = phone.getBrand();
         preparedParameters[1] = phone.getModel();
         preparedParameters[2] = phone.getPrice();
@@ -36,17 +31,17 @@ public class PhoneParametersPreparer {
         preparedParameters[8] = phone.getAnnounced();
         preparedParameters[9] = phone.getDeviceType();
         preparedParameters[10] = phone.getOs();
-        preparedParameters[11] =  phone.getDisplayResolution();
+        preparedParameters[11] = phone.getDisplayResolution();
         preparedParameters[12] = phone.getPixelDensity();
-        preparedParameters[13] =  phone.getDisplayTechnology();
+        preparedParameters[13] = phone.getDisplayTechnology();
         preparedParameters[14] = phone.getBackCameraMegapixels();
         preparedParameters[15] = phone.getFrontCameraMegapixels();
-        preparedParameters[16] =  phone.getRamGb();
+        preparedParameters[16] = phone.getRamGb();
         preparedParameters[17] = phone.getInternalStorageGb();
-        preparedParameters[18] =  phone.getBatteryCapacityMah();
+        preparedParameters[18] = phone.getBatteryCapacityMah();
         preparedParameters[19] = phone.getTalkTimeHours();
-        preparedParameters[20] =  phone.getStandByTimeHours();
-        preparedParameters[21] =  phone.getBluetooth();
+        preparedParameters[20] = phone.getStandByTimeHours();
+        preparedParameters[21] = phone.getBluetooth();
         preparedParameters[22] = phone.getPositioning();
         preparedParameters[23] = phone.getImageUrl();
         preparedParameters[24] = phone.getDescription();

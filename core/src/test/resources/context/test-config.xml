@@ -14,6 +14,16 @@
         <property name="dataSource" ref="dataSourceTest"/>
     </bean>
 
+    <bean id="simpleJdbcInsertTest" class="org.springframework.jdbc.core.simple.SimpleJdbcInsert">
+        <constructor-arg name="dataSource" ref="dataSourceTest"/>
+        <property name="generatedKeyName" value="id"/>
+        <property name="tableName" value="phones"/>
+    </bean>
+
+    <bean id="namedParameterJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+        <constructor-arg name="classicJdbcTemplate" ref="jdbcTemplateTest"/>
+    </bean>
+
     <jdbc:initialize-database data-source="dataSourceTest">
         <jdbc:script location="classpath:db/schemaTest.sql"/>
     </jdbc:initialize-database>

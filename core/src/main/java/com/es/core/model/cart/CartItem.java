@@ -5,9 +5,7 @@ import com.es.core.model.phone.Phone;
 import java.util.Objects;
 
 public class CartItem {
-
     private Phone phone;
-
     private Long quantity;
 
     public CartItem(Phone phone, Long quantity) {
@@ -36,12 +34,11 @@ public class CartItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CartItem cartItem = (CartItem) o;
-        return Objects.equals(phone, cartItem.phone) &&
-                Objects.equals(quantity, cartItem.quantity);
+        return Objects.equals(phone, cartItem.phone);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(phone, quantity);
+        return Objects.hash(phone);
     }
 }

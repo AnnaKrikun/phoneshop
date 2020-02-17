@@ -3,7 +3,7 @@ package com.es.core.service.impl;
 import com.es.core.dao.PhoneDao;
 import com.es.core.dao.StockDao;
 import com.es.core.exception.OutOfStockException;
-import com.es.core.exception.PhoneNotFoundException;
+import com.es.core.exception.ProductNotFoundException;
 import com.es.core.model.cart.Cart;
 import com.es.core.model.cart.CartItem;
 import com.es.core.model.phone.Phone;
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class HttpSessionCartService implements CartService {
+public class SessionCartService implements CartService {
     @Resource
     private Cart cart;
     @Resource
@@ -31,33 +31,46 @@ public class HttpSessionCartService implements CartService {
     }
 
     @Override
-    public void addPhone(Long phoneId, Long quantity) throws Exception {
+    public void addPhone(Long phoneId, Long quantity) {
         Phone phoneToAdd = checkPhone(phoneId);
+        Stock phoneStock = checkStock(phoneId);
+        addCartItem(phoneToAdd, quantity, phoneStock);
+        recalculateTotals();
+    }
 
+    private void addCartItem(Phone phoneToAdd, Long quantity, Stock phoneStock) {
+        Integer available = phoneStock.getStock() - phoneStock.getReserved();
+        Optional<CartItem> optionalCartItem = findOptionalCartItem(phoneToAdd.getId());
+        if (optionalCartItem.isPresent()) {
+            updateCartItem(optionalCartItem.get(), quantity, available, phoneStock);
+        } else {
+            addNewCartItem(phoneToAdd, quantity, available, phoneStock);
+        }
+    }
+
+    private void addNewCartItem(Phone phoneToAdd, Long quantity, Integer available, Stock phoneStock) {
+        if (quantity > available) {
+            throw new OutOfStockException();
+        }
+        cart.getCartItems().add(new CartItem(phoneToAdd, quantity));
+        stockDao.update(phoneToAdd.getId(), Math.toIntExact(quantity + phoneStock.getReserved()));
+    }
+
+    private void updateCartItem(CartItem cartItem, Long quantity, Integer available, Stock phoneStock) {
+        Long newQuantity = cartItem.getQuantity() + quantity;
+        if (quantity > available) {
+            throw new OutOfStockException();
+        }
+        cartItem.setQuantity(newQuantity);
+        stockDao.update(cartItem.getPhone().getId(), Math.toIntExact(newQuantity + phoneStock.getReserved()));
+    }
+
+    private Stock checkStock(Long phoneId) {
         Optional<Stock> phoneStock = stockDao.getStockById(phoneId);
         if (!phoneStock.isPresent()) {
-            throw new PhoneNotFoundException(phoneId);
+            throw new ProductNotFoundException(phoneId);
         }
-        Stock phoneToAddStock = phoneStock.get();
-        Integer available = phoneToAddStock.getStock() - phoneToAddStock.getReserved();
-
-        Optional<CartItem> optionalCartItem = findOptionalCartItem(phoneId);
-        if (optionalCartItem.isPresent()) {
-            CartItem cartItem = optionalCartItem.get();
-            Long newQuantity = cartItem.getQuantity() + quantity;
-            if (quantity > available) {
-                throw new OutOfStockException();
-            }
-            cartItem.setQuantity(newQuantity);
-            stockDao.update(phoneId, Math.toIntExact(newQuantity + phoneToAddStock.getReserved()));
-        } else {
-            if (quantity > available) {
-                throw new OutOfStockException();
-            }
-            cart.getCartItems().add(new CartItem(phoneToAdd, quantity));
-            stockDao.update(phoneId, Math.toIntExact(quantity + phoneToAddStock.getReserved()));
-        }
-        recalculateTotals();
+        return phoneStock.get();
     }
 
     private Optional<CartItem> findOptionalCartItem(Long phoneId) {
@@ -66,9 +79,8 @@ public class HttpSessionCartService implements CartService {
                 .findFirst();
     }
 
-
     @Override
-    public void update(Map<Long, Long> items) throws Exception {
+    public void update(Map<Long, Long> items) {
         for (Map.Entry<Long, Long> item : items.entrySet()) {
             Optional<CartItem> cartItem = findOptionalCartItem(item.getKey());
             if (cartItem.isPresent()) {
@@ -105,10 +117,10 @@ public class HttpSessionCartService implements CartService {
         return getCart().getTotalQuantity();
     }
 
-    private Phone checkPhone(Long phoneId) throws PhoneNotFoundException {
+    private Phone checkPhone(Long phoneId) throws ProductNotFoundException {
         Optional<Phone> phone = phoneDao.get(phoneId);
         if (!phone.isPresent()) {
-            throw new PhoneNotFoundException(phoneId);
+            throw new ProductNotFoundException(phoneId);
         }
         Phone phoneToAdd = phone.get();
         if (phoneToAdd.getPrice() == null) {
@@ -121,8 +133,8 @@ public class HttpSessionCartService implements CartService {
         cart.setTotalQuantity(cart.getCartItems().stream()
                 .mapToLong(CartItem::getQuantity)
                 .sum());
-        cart.setTotalPrice(BigDecimal.valueOf(cart.getCartItems().stream()
-                .mapToLong(item -> item.getQuantity() * item.getPhone().getPrice().intValueExact())
-                .sum()));
+        cart.setTotalPrice(cart.getCartItems().stream()
+                .map(item -> item.getPhone().getPrice().multiply(new BigDecimal(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
     }
 }

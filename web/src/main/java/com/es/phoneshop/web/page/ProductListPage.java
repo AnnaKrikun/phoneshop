@@ -1,18 +1,17 @@
 package com.es.phoneshop.web.page;
 
 import com.es.core.model.phone.Phone;
-import com.es.phoneshop.web.page.Pagination;
 
 import java.util.List;
 
-public class PhonePage {
+public class ProductListPage {
     private List<Phone> phoneList;
     private Pagination pagination;
 
-    public PhonePage() {
+    public ProductListPage() {
     }
 
-    public PhonePage(List<Phone> phoneList, Pagination pagination) {
+    public ProductListPage(List<Phone> phoneList, Pagination pagination) {
         this.phoneList = phoneList;
         this.pagination = pagination;
     }

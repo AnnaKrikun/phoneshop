@@ -1,17 +1,12 @@
-package com.es.core.model.cart;
+package com.es.phoneshop.web.cart;
 
 import java.math.BigDecimal;
 
 public class CartStatus {
-
     private  boolean isValid;
-
     private String errorMessage;
-
     private String successMessage;
-
     private Long totalQuantity;
-
     private BigDecimal totalPrice;
 
     public boolean isValid() {
