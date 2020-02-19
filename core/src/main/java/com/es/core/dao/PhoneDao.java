@@ -9,4 +9,6 @@ public interface PhoneDao {
     Optional<Phone> get(Long key);
     void save(Phone phone);
     List<Phone> findAll(int offset, int limit);
+    int countPhonesByQuery(String searchQuery);
+    List<Phone> getPhonesByQuery(String searchQuery, String sort, String order, int offset, int limit);
 }

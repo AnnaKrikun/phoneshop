@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -27,15 +28,20 @@ public class JdbcPhoneDaoTest {
     private static final int OFFSET_SUCCESS = 1;
     private static final int LIMIT_SUCCESS = 5;
     private static final int ZERO_SIZE = 0;
+    private static final Long ZERO = 0L;
     private static final String ERROR_IN_FIND_ALL_PHONES = "Error: Number of found / expected phones = ";
     private static final int OFFSET_OUT_OF_RANGE = 100;
-    private static final int AMOUNT_OF_PHONES_IN_DB = 10;
     private static final int LIMIT_OUT_OF_RANGE_POSITIVE = 100;
     private static final int LIMIT_ZERO = 0;
     private static final int OFFSET_ZERO = 0;
     private static final Long ADDED_PHONES = 1L;
     private static final String COUNT_PHONES = "select count (*) from phones";
     private static final String FIND_MAX_ID = "select max(id) from phones";
+    private static final String EMPTY_QUERY = "";
+    private static final int EXPECTED_SIZE = 10;
+    private static final String QUERY = "NOKIA";
+    private static final int EXPECTED_SIZE_QUERY = 2;
+    private static final String ASC = "asc";
 
     private Phone phone, phone1;
     private List phones;
@@ -55,21 +61,21 @@ public class JdbcPhoneDaoTest {
 
     @Test(expected = IllegalArgumentException.class)
     @DirtiesContext
-    public void throwIllegalArgumentExceptionWhenSaveNullBrand() {
+    public void shouldThrowIllegalArgumentExceptionWhenSaveNullBrand() {
         phone.setBrand(null);
         phoneDao.save(phone);
     }
 
     @Test(expected = IllegalArgumentException.class)
     @DirtiesContext
-    public void throwIllegalArgumentExceptionWhenSaveNullModel() {
+    public void shouldThrowIllegalArgumentExceptionWhenSaveNullModel() {
         phone.setModel(null);
         phoneDao.save(phone);
     }
 
     @Test(expected = IllegalArgumentException.class)
     @DirtiesContext
-    public void throwIllegalArgumentExceptionWhenSave2PhonesWithEqualBrands() {
+    public void shouldThrowIllegalArgumentExceptionWhenSave2PhonesWithEqualBrands() {
         phone.setBrand(BRAND);
         phone1.setBrand(BRAND);
 
@@ -79,7 +85,7 @@ public class JdbcPhoneDaoTest {
 
     @Test(expected = IllegalArgumentException.class)
     @DirtiesContext
-    public void throwIllegalArgumentExceptionWhenSave2PhonesWithEqualModels() {
+    public void shouldThrowIllegalArgumentExceptionWhenSave2PhonesWithEqualModels() {
         phone.setModel(MODEL);
         phone1.setModel(MODEL);
 
@@ -89,7 +95,7 @@ public class JdbcPhoneDaoTest {
 
     @Test(expected = IllegalArgumentException.class)
     @DirtiesContext
-    public void throwIllegalArgumentExceptionWhenSave2PhonesWithEqualBrandsAndModels() {
+    public void shouldThrowIllegalArgumentExceptionWhenSave2PhonesWithEqualBrandsAndModels() {
         phone.setBrand(BRAND);
         phone1.setBrand(BRAND);
         phone.setModel(MODEL);
@@ -101,7 +107,7 @@ public class JdbcPhoneDaoTest {
 
     @Test
     @DirtiesContext
-    public void savePhoneSuccessfully() {
+    public void shouldSavePhoneWithNullIdSuccessfully() {
         Long amountBeforeSave = jdbcTemplateTest.queryForObject(COUNT_PHONES, Long.class);
         Long maxIdBeforeSave = jdbcTemplateTest.queryForObject(FIND_MAX_ID, Long.class);
 
@@ -119,65 +125,105 @@ public class JdbcPhoneDaoTest {
                 ERROR_ID_GENERATED_ID + (maxIdBeforeSave + ADDED_PHONES) + " / " + maxIdAfterSave);
     }
 
+    @Test
+    @DirtiesContext
+    public void shouldUpdatePhoneSuccessfully() {
+        Long amountBeforeSave = jdbcTemplateTest.queryForObject(COUNT_PHONES, Long.class);
+
+        phone.setId(1001L);
+        phone.setModel(MODEL);
+        phone.setBrand(BRAND);
+
+        phoneDao.save(phone);
+
+        Long amountAfterSave = jdbcTemplateTest.queryForObject(COUNT_PHONES, Long.class);
+
+        Assert.isTrue(ZERO.equals(amountAfterSave - amountBeforeSave),
+                ERROR_IN_PHONE_SAVE + ZERO + " / " + (amountAfterSave - amountBeforeSave));
+    }
 
     @Test
     @DirtiesContext
-    public void getPhoneByKeySuccessfully() {
+    public void shouldGetPhoneByKeySuccessfully() {
         optionalPhone = phoneDao.get(EXISTING_KEY);
+
         Assert.isTrue(optionalPhone.isPresent(), ERROR_IN_EXISTING_KEY);
     }
 
     @Test
     @DirtiesContext
-    public void getPhoneByNotExistingKey() {
+    public void shouldNotGetPhoneByNotExistingKey() {
         optionalPhone = phoneDao.get(NOT_EXISTING_KEY);
         Assert.isTrue(!optionalPhone.isPresent(), ERROR_IN_EXISTING_KEY);
     }
 
     @Test
     @DirtiesContext
-    public void findAllPhonesSuccessfully() {
+    public void shouldFindAllPhonesSuccessfully() {
         phones = phoneDao.findAll(OFFSET_SUCCESS, LIMIT_SUCCESS);
+
         Assert.isTrue(phones.size() == LIMIT_SUCCESS,
                 ERROR_IN_FIND_ALL_PHONES + phones.size() + " " + LIMIT_SUCCESS);
     }
 
     @Test
     @DirtiesContext
-    public void findAllPhonesWithOutOfRangeOffset() {
+    public void shouldNotFindAllPhonesWithOutOfRangeOffset() {
         phones = phoneDao.findAll(OFFSET_OUT_OF_RANGE, LIMIT_SUCCESS);
+
         Assert.isTrue(phones.isEmpty(), ERROR_IN_FIND_ALL_PHONES + phones.size() + "/" + ZERO_SIZE);
     }
 
     @Test
     @DirtiesContext
-    public void findAllPhonesWithOutOfRangePositiveLimit() {
-        phones = phoneDao.findAll(OFFSET_SUCCESS, LIMIT_OUT_OF_RANGE_POSITIVE);
-        Assert.isTrue(phones.size() == AMOUNT_OF_PHONES_IN_DB - OFFSET_SUCCESS,
-                ERROR_IN_FIND_ALL_PHONES + phones.size() + "/" +
-                        (AMOUNT_OF_PHONES_IN_DB - OFFSET_SUCCESS));
-    }
-
-
-    @Test
-    @DirtiesContext
-    public void findAllPhonesWithZeroLimit() {
+    public void shouldNotFindAllPhonesWithZeroLimit() {
         phones = phoneDao.findAll(OFFSET_SUCCESS, LIMIT_ZERO);
+
         Assert.isTrue(phones.isEmpty(), ERROR_IN_FIND_ALL_PHONES + phones.size() + "/" + ZERO_SIZE);
     }
 
     @Test
     @DirtiesContext
-    public void findAllPhonesWithOutOfRangeOffsetAndLimit() {
+    public void shouldNotFindAllPhonesWithOutOfRangeOffsetAndLimit() {
         phones = phoneDao.findAll(OFFSET_OUT_OF_RANGE, LIMIT_OUT_OF_RANGE_POSITIVE);
+
         Assert.isTrue(phones.isEmpty(), ERROR_IN_FIND_ALL_PHONES + phones.size() + "/" + ZERO_SIZE);
     }
 
     @Test
     @DirtiesContext
-    public void findAllPhonesWithZeroOffsetAndLimit() {
+    public void shouldNotFindAllPhonesWithZeroOffsetAndLimit() {
         phones = phoneDao.findAll(OFFSET_ZERO, LIMIT_ZERO);
+
         Assert.isTrue(phones.isEmpty(), ERROR_IN_FIND_ALL_PHONES + phones.size() + "/" + ZERO_SIZE);
     }
+
+    @Test
+    @DirtiesContext
+    public void shouldCountPhonesByEmptyQueryCorrectly() {
+        int countPhones = phoneDao.countPhonesByQuery(EMPTY_QUERY);
+
+        Assert.isTrue(countPhones == EXPECTED_SIZE, ERROR_IN_FIND_ALL_PHONES + countPhones +
+                "/" + EXPECTED_SIZE);
+    }
+
+    @Test
+    @DirtiesContext
+    public void shouldCountPhonesByQueryCorrectly() {
+        int countPhones = phoneDao.countPhonesByQuery(QUERY);
+
+        Assert.isTrue(countPhones == EXPECTED_SIZE_QUERY, ERROR_IN_FIND_ALL_PHONES + countPhones +
+                "/" + EXPECTED_SIZE_QUERY);
+    }
+
+    @Test
+    @DirtiesContext
+    public void shouldGetPhonesByQueryCorrectly() {
+        List<Phone> phones = phoneDao.getPhonesByQuery(QUERY, BRAND, ASC, ZERO_SIZE, EXPECTED_SIZE);
+
+        Assert.isTrue(phones.size() == EXPECTED_SIZE_QUERY, ERROR_IN_FIND_ALL_PHONES + phones.size() +
+                "/" + EXPECTED_SIZE_QUERY);
+    }
+
 
 }

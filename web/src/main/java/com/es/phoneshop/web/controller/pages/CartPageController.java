@@ -20,6 +20,6 @@ public class CartPageController {
 
     @RequestMapping(method = RequestMethod.PUT)
     public void updateCart() {
-        cartService.update(null);
+            cartService.update(null);
     }
 }

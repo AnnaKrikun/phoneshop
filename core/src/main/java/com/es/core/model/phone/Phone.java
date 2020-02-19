@@ -10,51 +10,28 @@ public class Phone {
     private String brand;
     private String model;
     private BigDecimal price;
-
     private BigDecimal displaySizeInches;
-
     private Integer weightGr;
-
     private BigDecimal lengthMm;
-
     private BigDecimal widthMm;
-
     private BigDecimal heightMm;
-
     private Date announced;
-
     private String deviceType;
-
     private String os;
-
     private Set<Color> colors = Collections.EMPTY_SET;
-
     private String displayResolution;
-
     private Integer pixelDensity;
-
     private String displayTechnology;
-
     private BigDecimal backCameraMegapixels;
-
     private BigDecimal frontCameraMegapixels;
-
     private BigDecimal ramGb;
-
     private BigDecimal internalStorageGb;
-
     private Integer batteryCapacityMah;
-
     private BigDecimal talkTimeHours;
-
     private BigDecimal standByTimeHours;
-
     private String bluetooth;
-
     private String positioning;
-
     private String imageUrl;
-
     private String description;
 
     public String getBrand() {
@@ -271,5 +248,27 @@ public class Phone {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == this) {
+            return true;
+        }
+        if (object == null || object.getClass() != this.getClass()) {
+            return false;
+        }
+        Phone phone = (Phone) object;
+        return id.equals(phone.id) && (brand == phone.brand || brand != null && brand.equals(phone.getBrand())) &&
+                (model == phone.model || model != null && model.equals(phone.getModel()));
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 1;
+        result = (int) (31 * result * id + ((brand != null) ? 0 : brand.hashCode())) +
+                ((model != null) ? 0 : model.hashCode());
+        return result;
     }
 }
