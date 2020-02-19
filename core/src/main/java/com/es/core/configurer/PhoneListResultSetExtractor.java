@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.es.core.constants.FieldConstants.*;
+
 @Component
 public class PhoneListResultSetExtractor extends PhoneResultExtractor implements ResultSetExtractor<List<Phone>> {
 
@@ -20,7 +22,7 @@ public class PhoneListResultSetExtractor extends PhoneResultExtractor implements
         Map<Long, Phone> phoneMap = new HashMap<>();
         List<Phone> phoneList = new ArrayList<>();
         while (resultSet.next()) {
-            Long phoneId = resultSet.getLong(FieldConstants.PHONE_FIELD_NAMES[25]);
+            Long phoneId = resultSet.getLong(ID);
             Phone changePhone = phoneMap.get(phoneId);
             if (changePhone == null) {
                 changePhone = readPropertiesToPhone(resultSet);

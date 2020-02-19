@@ -6,20 +6,23 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.es.core.constants.FieldConstants.FIELD_AMOUNT;
+import static com.es.core.constants.FieldConstants.PHONE_FIELD_NAMES;
+
 @Component
 public class PhoneParametersPreparer {
 
     public Map<String, Object> fillMapForSaving(Phone phone) {
         Map<String, Object> map = new HashMap<>();
         Object[] phoneParameters = getPreparedParameters(phone);
-        for (int i = 0; i < FieldConstants.FIELD_AMOUNT; i++) {
-            map.put(FieldConstants.PHONE_FIELD_NAMES[i], phoneParameters[i]);
+        for (int i = 0; i < FIELD_AMOUNT; i++) {
+            map.put(PHONE_FIELD_NAMES[i], phoneParameters[i]);
         }
         return map;
     }
 
     public Object[] getPreparedParameters(Phone phone) {
-        Object[] preparedParameters = new Object[FieldConstants.FIELD_AMOUNT];
+        Object[] preparedParameters = new Object[FIELD_AMOUNT];
         preparedParameters[0] = phone.getBrand();
         preparedParameters[1] = phone.getModel();
         preparedParameters[2] = phone.getPrice();
