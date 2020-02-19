@@ -6,18 +6,39 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.es.core.constants.FieldConstants.FIELD_AMOUNT;
-import static com.es.core.constants.FieldConstants.PHONE_FIELD_NAMES;
+import static com.es.core.constants.FieldConstants.*;
 
 @Component
 public class PhoneParametersPreparer {
 
     public Map<String, Object> fillMapForSaving(Phone phone) {
         Map<String, Object> map = new HashMap<>();
-        Object[] phoneParameters = getPreparedParameters(phone);
-        for (int i = 0; i < FIELD_AMOUNT; i++) {
-            map.put(PHONE_FIELD_NAMES[i], phoneParameters[i]);
-        }
+        map.put(BRAND, phone.getBrand());
+        map.put(MODEL, phone.getModel());
+        map.put(PRICE, phone.getPrice());
+        map.put(DISPLAY_SIZE_INCHES, phone.getDisplaySizeInches());
+        map.put(WEIGHT_GR, phone.getWeightGr());
+        map.put(LENGTH_MM, phone.getLengthMm());
+        map.put(WIDTH_MM, phone.getWidthMm());
+        map.put(HEIGHT_MM, phone.getHeightMm());
+        map.put(ANNOUNCED, phone.getAnnounced());
+        map.put(DEVICE_TYPE, phone.getDeviceType());
+        map.put(OS, phone.getOs());
+        map.put(DISPLAY_RESOLUTION, phone.getDisplayResolution());
+        map.put(PIXEL_DENSITY, phone.getPixelDensity());
+        map.put(DISPLAY_TECHNOLOGY, phone.getDisplayTechnology());
+        map.put(BACK_CAMERA_MEGAPIXELS, phone.getBackCameraMegapixels());
+        map.put(FRONT_CAMERA_MEGAPIXELS, phone.getFrontCameraMegapixels());
+        map.put(RAM_GB, phone.getRamGb());
+        map.put(INTERNAL_STORAGE_GB, phone.getInternalStorageGb());
+        map.put(BATTERY_CAPACITY_MAH, phone.getBatteryCapacityMah());
+        map.put(TALK_TIME_HOURS, phone.getTalkTimeHours());
+        map.put(STAND_BY_TIME_HOURS, phone.getStandByTimeHours());
+        map.put(BLUETOOTH, phone.getBluetooth());
+        map.put(POSITIONING, phone.getPositioning());
+        map.put(IMAGE_URL, phone.getImageUrl());
+        map.put(DESCRIPTION, phone.getDescription());
+        map.put(ID, phone.getId());
         return map;
     }
 
