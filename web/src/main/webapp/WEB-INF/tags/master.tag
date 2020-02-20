@@ -16,6 +16,9 @@
     />
     <link href="<c:url value="/resources/styles/main.css"/>" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        var context_path = "<c:out value="${pageContext.request.contextPath}"/>";
+    </script>
     <script src="<c:url value="/resources/js/ajaxCart.js"/>"></script>
 </head>
 <body class="product-list">

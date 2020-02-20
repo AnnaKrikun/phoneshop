@@ -8,7 +8,7 @@ $(document).ready(function () {
         requestData["quantityString"] = quantity;
 
         $.ajax({
-            url: "ajaxCart",
+            url: context_path + "/ajaxCart",
             type: "POST",
             contentType: "application/json;charset=UTF-8",
             dataType: "json",
