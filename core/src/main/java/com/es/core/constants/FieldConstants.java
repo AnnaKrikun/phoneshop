@@ -31,8 +31,19 @@ public class FieldConstants {
     public static final String POSITIONING = "positioning";
     public static final String IMAGE_URL = "imageUrl";
     public static final String DESCRIPTION = "description";
-    public static final String ID = "id";
+    public static final String PHONE_ID = "phoneId";
     public static final int FIELD_AMOUNT = 26;
     public static final String COLOR_ID = "colorId";
     public static final String COLOR_CODE = "colorCode";
+    public static final String SUBTOTAL = "subtotal";
+    public static final String DELIVERY_PRICE = "deliveryPrice";
+    public static final String FIRST_NAME = "firstName";
+    public static final String LAST_NAME = "lastName";
+    public static final String DELIVERY_ADDRESS = "deliveryAddress";
+    public static final String CONTACT_PHONE_NO = "contactPhoneNo";
+    public static final String ADDITIONAL_INFO = "additionalInfo";
+    public static final String STATUS = "status";
+    public static final String QUANTITY = "quantity";
+    public static final String ORDER_ID = "orderId";
+    public static final String ORDER_ITEM_ID = "orderItemId";
 }

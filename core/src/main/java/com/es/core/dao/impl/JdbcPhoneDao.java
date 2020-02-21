@@ -1,7 +1,7 @@
 package com.es.core.dao.impl;
 
-import com.es.core.configurer.PhoneListResultSetExtractor;
-import com.es.core.configurer.PhoneParametersPreparer;
+import com.es.core.configurer.phone.PhoneListResultSetExtractor;
+import com.es.core.configurer.phone.PhoneParametersPreparer;
 import com.es.core.dao.ColorDao;
 import com.es.core.dao.PhoneDao;
 import com.es.core.model.phone.Phone;

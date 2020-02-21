@@ -1,4 +1,4 @@
-package com.es.core.configurer;
+package com.es.core.configurer.phone;
 
 import com.es.core.model.phone.Phone;
 import org.springframework.stereotype.Component;
@@ -38,7 +38,7 @@ public class PhoneParametersPreparer {
         map.put(POSITIONING, phone.getPositioning());
         map.put(IMAGE_URL, phone.getImageUrl());
         map.put(DESCRIPTION, phone.getDescription());
-        map.put(ID, phone.getId());
+        map.put(PHONE_ID, phone.getId());
         return map;
     }
 

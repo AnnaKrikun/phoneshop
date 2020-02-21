@@ -1,4 +1,4 @@
-package com.es.core.configurer;
+package com.es.core.configurer.phone;
 
 import com.es.core.model.phone.Phone;
 import org.springframework.dao.DataAccessException;
@@ -22,7 +22,7 @@ public class PhoneListResultSetExtractor extends PhoneResultExtractor implements
         Map<Long, Phone> phoneMap = new HashMap<>();
         List<Phone> phoneList = new ArrayList<>();
         while (resultSet.next()) {
-            Long phoneId = resultSet.getLong(ID);
+            Long phoneId = resultSet.getLong(PHONE_ID);
             Phone changePhone = phoneMap.get(phoneId);
             if (changePhone == null) {
                 changePhone = readPropertiesToPhone(resultSet);
