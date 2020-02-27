@@ -3,15 +3,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<tags:master pageTitle="Order">
-    <h2>Order</h2>
-    <p>
-        <br>
-        <a href="<c:url value="/cart"/>">
-            <button type="button" class="btn btn-info">Back to cart</button>
-        </a>
-    </p>
-    <p class="error-message"><c:out value=" ${errorMessageOutOfStock}"/></p>
+<tags:master pageTitle="Order overview">
+    <h2>Thanks for your order!</h2>
+    <h4>Order number:<c:out value="${order.id}"/></h4>
 
     <table class="table">
         <thead>
@@ -87,39 +81,34 @@
             <td><h5>$<c:out value="${order.totalPrice}"/></h5></td>
         </tr>
 
-        <form:form method="POST" modelAttribute="order">
-            <table>
-                <tr>
-                    <td><form:label path="firstName">First Name*</form:label></td>
-                    <td><form:input path="firstName" cssClass="form-control"/>
-                        <form:errors path="firstName" cssClass="error-message"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td><form:label path="lastName">Last Name*</form:label></td>
-                    <td><form:input path="lastName" cssClass="form-control"/>
-                        <form:errors path="lastName" cssClass="error-message"/></td>
-                </tr>
-                <tr>
-                    <td><form:label path="deliveryAddress">Address*</form:label></td>
-                    <td><form:input path="deliveryAddress" cssClass="form-control"/>
-                        <form:errors path="deliveryAddress" cssClass="error-message"/></td>
-                </tr>
-                <tr>
-                    <td><form:label path="contactPhoneNo">Phone*</form:label></td>
-                    <td><form:input path="contactPhoneNo" cssClass="form-control"/>
-                        <form:errors path="contactPhoneNo" cssClass="error-message"/></td>
-                </tr>
-                <tr>
-                    <td colspan="2"><form:textarea path="additionalInfo" cssClass="form-control"/>
-                        <form:errors path="additionalInfo"/></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td class="text-right"><input type="submit" value="Submit" class="btn btn-dark" /></td>
-                </tr>
-            </table>
-        </form:form>
+
+        <table>
+            <tr>
+                <td>First Name:</td>
+                <td><c:out value="${order.firstName}"/></td>
+            </tr>
+            <tr>
+                <td>Last Name:</td>
+                <td><c:out value="${order.lastName}"/></td>
+            </tr>
+            <tr>
+                <td>Address:</td>
+                <td><c:out value="${order.deliveryAddress}"/></td>
+            </tr>
+            <tr>
+                <td>Phone:</td>
+                <td><c:out value="${order.contactPhoneNo}"/></td>
+            </tr>
+            <tr>
+                <td colspan="3"><c:out value="${order.additionalInfo}"/></td>
+            </tr>
+        </table>
         </tbody>
     </table>
+    <p>
+        <br>
+        <a href="<c:url value="/productList"/>">
+            <button type="button" class="btn btn-info">Back to shopping</button>
+        </a>
+    </p>
 </tags:master>

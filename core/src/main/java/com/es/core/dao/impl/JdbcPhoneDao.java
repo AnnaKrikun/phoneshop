@@ -73,14 +73,16 @@ public class JdbcPhoneDao implements PhoneDao {
     private PhoneListResultSetExtractor phoneListResultSetExtractor;
 
     @Autowired
-    public JdbcPhoneDao(ColorDao colorDao, JdbcTemplate jdbcTemplate, SimpleJdbcInsert simpleJdbcInsert,
+    public JdbcPhoneDao(ColorDao colorDao, JdbcTemplate jdbcTemplate,
                         PhoneParametersPreparer phoneParametersPreparer,
                         PhoneListResultSetExtractor phoneListResultSetExtractor) {
         this.colorDao = colorDao;
         this.jdbcTemplate = jdbcTemplate;
         this.parametersPreparer = phoneParametersPreparer;
         this.phoneListResultSetExtractor = phoneListResultSetExtractor;
-        this.simpleJdbcInsert = simpleJdbcInsert;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("phones")
+                .usingGeneratedKeyColumns("id");
     }
 
 

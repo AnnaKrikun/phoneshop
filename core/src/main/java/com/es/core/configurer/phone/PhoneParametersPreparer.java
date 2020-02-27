@@ -1,5 +1,6 @@
 package com.es.core.configurer.phone;
 
+import com.es.core.configurer.ParametersPreparer;
 import com.es.core.model.phone.Phone;
 import org.springframework.stereotype.Component;
 
@@ -9,8 +10,9 @@ import java.util.Map;
 import static com.es.core.constants.FieldConstants.*;
 
 @Component
-public class PhoneParametersPreparer {
+public class PhoneParametersPreparer implements ParametersPreparer<Phone> {
 
+    @Override
     public Map<String, Object> fillMapForSaving(Phone phone) {
         Map<String, Object> map = new HashMap<>();
         map.put(BRAND, phone.getBrand());
@@ -42,6 +44,7 @@ public class PhoneParametersPreparer {
         return map;
     }
 
+    @Override
     public Object[] getPreparedParameters(Phone phone) {
         Object[] preparedParameters = new Object[FIELD_AMOUNT];
         preparedParameters[0] = phone.getBrand();

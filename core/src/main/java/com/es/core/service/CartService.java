@@ -21,6 +21,10 @@ public interface CartService {
 
     void remove(Long phoneId);
 
+    void clearCart();
+
+    void deleteOutOfStock();
+
     BigDecimal getCartTotalPrice();
 
     Long getCartTotalQuantity();

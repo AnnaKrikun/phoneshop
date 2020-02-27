@@ -9,21 +9,30 @@ import com.es.core.model.cart.CartItem;
 import com.es.core.model.phone.Phone;
 import com.es.core.model.phone.Stock;
 import com.es.core.service.CartService;
+import com.es.core.service.StockService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-public class SessionCartService implements CartService {
-    @Resource
+public class SessionCartService extends CalculationServiceImpl implements CartService {
     private Cart cart;
-    @Resource
-    private PhoneDao phoneDao;
-    @Resource
-    private StockDao stockDao;
+    private final PhoneDao phoneDao;
+    private final StockDao stockDao;
+    private final StockService stockService;
+
+    @Autowired
+    public SessionCartService(Cart cart, PhoneDao phoneDao, StockDao stockDao, StockService stockService) {
+        this.cart = cart;
+        this.phoneDao = phoneDao;
+        this.stockDao = stockDao;
+        this.stockService = stockService;
+    }
 
     @Override
     public Cart getCart() {
@@ -42,27 +51,25 @@ public class SessionCartService implements CartService {
         Integer available = phoneStock.getStock() - phoneStock.getReserved();
         Optional<CartItem> optionalCartItem = findOptionalCartItem(phoneToAdd.getId());
         if (optionalCartItem.isPresent()) {
-            updateCartItem(optionalCartItem.get(), quantity, available, phoneStock);
+            updateCartItem(optionalCartItem.get(), quantity, available);
         } else {
-            addNewCartItem(phoneToAdd, quantity, available, phoneStock);
+            addNewCartItem(phoneToAdd, quantity, available);
         }
     }
 
-    private void addNewCartItem(Phone phoneToAdd, Long quantity, Integer available, Stock phoneStock) {
+    private void addNewCartItem(Phone phoneToAdd, Long quantity, Integer available) {
         if (quantity > available) {
             throw new OutOfStockException();
         }
         cart.getCartItems().add(new CartItem(phoneToAdd, quantity));
-        stockDao.update(phoneToAdd.getId(), Math.toIntExact(quantity + phoneStock.getReserved()));
     }
 
-    private void updateCartItem(CartItem cartItem, Long quantity, Integer available, Stock phoneStock) {
+    private void updateCartItem(CartItem cartItem, Long quantity, Integer available) {
         Long newQuantity = cartItem.getQuantity() + quantity;
         if (quantity > available) {
             throw new OutOfStockException();
         }
         cartItem.setQuantity(newQuantity);
-        stockDao.update(cartItem.getPhone().getId(), Math.toIntExact(newQuantity + phoneStock.getReserved()));
     }
 
     private Stock checkStock(Long phoneId) {
@@ -88,12 +95,11 @@ public class SessionCartService implements CartService {
 
     @Override
     public void update(Long phoneId, Long newQuantity) {
-        if (newQuantity.compareTo(0L) > 0) {
+        if (newQuantity.longValue() > 0) {
             Optional<CartItem> cartItemOptional = findOptionalCartItem(phoneId);
             if (cartItemOptional.isPresent()) {
                 CartItem cartItem = cartItemOptional.get();
                 cartItem.setQuantity(newQuantity);
-                stockDao.update(phoneId, Math.toIntExact(newQuantity));
             }
         } else {
             remove(phoneId);
@@ -107,10 +113,26 @@ public class SessionCartService implements CartService {
         if (cartItemToDelete.isPresent()) {
             cart.getCartItems().remove(cartItemToDelete.get());
             recalculateTotals();
-            Optional<Stock> stock = stockDao.getStockById(phoneId);
-            stockDao.update(phoneId, Math.toIntExact(stock.get().getReserved() -
-                    cartItemToDelete.get().getQuantity()));
         }
+    }
+
+    @Override
+    public void clearCart() {
+        List<Long> phoneIds = getCart().getCartItems().stream()
+                .map(cartItem -> cartItem.getPhone().getId())
+                .collect(Collectors.toList());
+        phoneIds.forEach(this::remove);
+    }
+
+    @Override
+    public void deleteOutOfStock() {
+        List<CartItem> cartItems = cart.getCartItems();
+        cartItems.stream().forEach(cartItem -> {
+            Integer availableStock = stockService.getAvailableStock(cartItem.getPhone().getId());
+            if (availableStock < cartItem.getQuantity()) {
+                remove(cartItem.getPhone().getId());
+            }
+        });
     }
 
     @Override
@@ -133,14 +155,5 @@ public class SessionCartService implements CartService {
             throw new IllegalArgumentException();
         }
         return phoneToAdd;
-    }
-
-    private void recalculateTotals() {
-        cart.setTotalQuantity(cart.getCartItems().stream()
-                .mapToLong(CartItem::getQuantity)
-                .sum());
-        cart.setTotalPrice(cart.getCartItems().stream()
-                .map(item -> item.getPhone().getPrice().multiply(new BigDecimal(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add));
     }
 }
