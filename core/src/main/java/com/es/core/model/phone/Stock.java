@@ -37,4 +37,8 @@ public class Stock {
     public void setReserved(Integer reserved) {
         this.reserved = reserved;
     }
+
+    public Long getPhoneId() {
+        return phone.getId();
+    }
 }

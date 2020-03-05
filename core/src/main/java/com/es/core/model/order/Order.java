@@ -5,6 +5,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
+import java.sql.Time;
+import java.util.Date;
 import java.util.List;
 
 public class Order {
@@ -40,6 +42,7 @@ public class Order {
     private String additionalInfo;
 
     private OrderStatus status;
+    private Date date;
 
     public Order() {}
 
@@ -50,6 +53,10 @@ public class Order {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public Date getDate() { return date; }
+
+    public void setDate(Date date) { this.date = date; }
 
     public List<OrderItem> getOrderItems() {
         return orderItems;

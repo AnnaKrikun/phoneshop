@@ -9,6 +9,6 @@ public interface StockService {
     List<Stock> getStocks(List<Long> phoneIds);
     List<Stock> getPositiveStocks(List<Long> phoneIds);
     Optional<Stock> getStockById(Long phoneId);
-    void update(Long phoneId, int reserved);
-    Integer getAvailableStock(Long phoneId);
+    void update(Long phoneId, Long reserved);
+    Long getAvailableStock(Long phoneId);
 }

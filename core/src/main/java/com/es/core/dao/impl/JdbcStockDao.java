@@ -1,6 +1,7 @@
 package com.es.core.dao.impl;
 
 import com.es.core.dao.StockDao;
+import com.es.core.exception.OutOfStockException;
 import com.es.core.model.phone.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -19,8 +20,13 @@ public class JdbcStockDao implements StockDao {
     private static final String SELECT_POSITIVE_STOCKS_BY_ID = "select * from stocks where phoneId in (:phoneIds) " +
             " and stock > 0";
     private static final String SELECT_STOCK_BY_ID = "select * from stocks where phoneId = ? and stock > 0";
-    private static final String UPDATE_STOCK_BY_ID = "update stocks set reserved = ? where phoneId = ?";
+    private static final String UPDATE_STOCK_BY_ID = "update stocks set reserved = reserved + ? where phoneId = ? and "
+        +" stock >= reserved + ?";
+    private static final String UPDATE_DELIVERED_STOCK_BY_ID = "update stocks set reserved = reserved - ? , " +
+            " stock = stock - ? where phoneId = ?";
     private static final String PHONE_IDS = "phoneIds";
+    private static final String UPDATE_REJECTED_STOCK_BY_ID = "update stocks set reserved = reserved - ? " +
+            " where phoneId = ?";
 
     private JdbcTemplate jdbcTemplate;
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -58,7 +64,32 @@ public class JdbcStockDao implements StockDao {
     }
 
     @Override
-    public void update(Long phoneId, int reserved) {
-        jdbcTemplate.update(UPDATE_STOCK_BY_ID, new Object[]{reserved, phoneId});
+    public void updateNew(Long phoneId, Long reserved) {
+        /*int rowsUpdated = */jdbcTemplate.update(UPDATE_STOCK_BY_ID, new Object[]{reserved, phoneId, reserved});
+        /*if (rowsUpdated ==0){
+            throw new OutOfStockException();
+        }*/
+    }
+
+    @Override
+    public void updateDelivered(Map<Long, Long> map) {
+        for (Map.Entry<Long, Long> entry : map.entrySet()) {
+            updateDelivered(entry.getKey(), entry.getValue());
+        }
+    }
+
+    @Override
+    public void updateRejected(Map<Long, Long> map) {
+        for (Map.Entry<Long, Long> entry : map.entrySet()) {
+            updateRejected(entry.getKey(), entry.getValue());
+        }
+    }
+
+    private void updateRejected(Long phoneId, Long reserved) {
+        jdbcTemplate.update(UPDATE_REJECTED_STOCK_BY_ID, new Object[]{reserved, phoneId});
+    }
+
+    private void updateDelivered(Long phoneId, Long reserved) {
+        jdbcTemplate.update(UPDATE_DELIVERED_STOCK_BY_ID, new Object[]{reserved, reserved, phoneId});
     }
 }

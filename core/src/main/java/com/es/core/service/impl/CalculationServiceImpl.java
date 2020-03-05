@@ -13,11 +13,21 @@ public class CalculationServiceImpl implements CalculationService {
 
     @Override
     public void recalculateTotals() {
-        cart.setTotalQuantity(cart.getCartItems().stream()
-                .mapToLong(CartItem::getQuantity)
-                .sum());
+        recalculateTotalQuantity();
+        recalculateTotalPrice();
+    }
+
+    @Override
+    public void recalculateTotalPrice() {
         cart.setTotalPrice(cart.getCartItems().stream()
                 .map(item -> item.getPhone().getPrice().multiply(new BigDecimal(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add));
+    }
+
+    @Override
+    public void recalculateTotalQuantity() {
+        cart.setTotalQuantity(cart.getCartItems().stream()
+                .mapToLong(CartItem::getQuantity)
+                .sum());
     }
 }

@@ -1,7 +1,7 @@
 package com.es.core.service.impl;
 
 import com.es.core.dao.OrderDao;
-import com.es.core.exception.OutOfStockException;
+import com.es.core.exception.OrderNotFoundException;
 import com.es.core.model.cart.Cart;
 import com.es.core.model.order.Order;
 import com.es.core.model.order.OrderItem;
@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,7 +47,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void placeOrder(Order order) throws OutOfStockException {
+    public void placeOrder(Order order) {
+        order.setDate(new Date());
         orderDao.save(order);
         cartService.clearCart();
     }
@@ -54,5 +56,25 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Optional<Order> getOrder(Long orderId) {
         return orderDao.get(orderId);
+    }
+
+    @Override
+    public List<Order> getAllOrders(int offset, int limit) {
+        return orderDao.getAll(offset, limit);
+    }
+
+    @Override
+    public int countOrders() {
+        return orderDao.countOrders();
+    }
+
+    @Override
+    public void updateOrderStatus(Long id, OrderStatus orderStatus) {
+        Order order = getOrder(id).orElseThrow(() -> new OrderNotFoundException(id));
+        if (order.getStatus() != OrderStatus.NEW || orderStatus == OrderStatus.NEW) {
+            throw new IllegalArgumentException();
+        }
+        orderDao.updateOrderStatus(id, orderStatus);
+        order.setStatus(orderStatus);
     }
 }

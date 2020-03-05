@@ -9,14 +9,17 @@ public class ControllerConstants {
     public static final String PRODUCT_LIST_MAPPING = "/productList";
     public static final String AJAX_CART_MAPPING = "/ajaxCart";
 
+    public static final String REDIRECT_ORDER_OVERVIEW ="redirect:orderOverview/";
+    public static final String REDIRECT_ADMIN_ORDER_DETAILS ="redirect:/admin/orders/";
+
     public static final String REDIRECT_CART_PAGE = "redirect:/cart";
     public static final String CART_PAGE_NAME = "cart";
     public static final String PRODUCT_DETAILS_PAGE_NAME = "productDetails";
     public static final String PRODUCT_LIST_PAGE_NAME = "productList";
     public static final String NOT_FOUND_PAGE_NAME ="errors/pageNotFound";
     public static final String ORDER_PAGE_NAME = "order";
-    public static final String REDIRECT_ORDER_OVERVIEW ="redirect:orderOverview/";
+    public static final String ADMIN_ORDERS_PAGE_NAME = "admin/adminOrders";
     public static final String ORDER_OVERVIEW_PAGE_NAME = "orderOverview";
-
-
+    public static final String ADMIN_ORDER_DETAILS_PAGE_NAME = "admin/adminOrderDetails";
+    public static final String BAD_UPDATE_STATUS_REQUEST_PAGE_NAME = "errors/errorUpdateStatus";
 }

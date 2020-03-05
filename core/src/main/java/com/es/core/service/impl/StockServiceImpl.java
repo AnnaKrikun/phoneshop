@@ -8,10 +8,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StockServiceImpl implements StockService {
-    private final StockDao stockDao;
+    private StockDao stockDao;
 
     @Autowired
     public StockServiceImpl(StockDao stockDao) {
@@ -29,21 +30,16 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public Optional<Stock> getStockById(Long phoneId) {
-        return stockDao.getStockById(phoneId);
+    public Optional<Stock> getStockById(Long phoneId) { return stockDao.getStockById(phoneId); }
+
+    @Override
+    public void update(Long phoneId, Long reserved) {
+        stockDao.updateNew(phoneId, reserved);
     }
 
     @Override
-    public void update(Long phoneId, int reserved) {
-        stockDao.update(phoneId, reserved);
-    }
-
-    @Override
-    public Integer getAvailableStock(Long phoneId) {
+    public Long getAvailableStock(Long phoneId) {
         Optional<Stock> stock = getStockById(phoneId);
-        if (stock.isPresent()) {
-            return stock.get().getStock() - stock.get().getReserved();
-        }
-        return 0;
+        return stock.isPresent() ? (long)(stock.get().getStock() - stock.get().getReserved()) : 0L;
     }
 }
