@@ -1,7 +1,7 @@
-package com.es.core.configurer.phone;
+package com.es.core.preparer.phone;
 
-import com.es.core.configurer.ParametersPreparer;
 import com.es.core.model.phone.Phone;
+import com.es.core.preparer.ParametersPreparer;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;

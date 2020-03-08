@@ -6,7 +6,9 @@ import com.es.core.model.phone.Phone;
 import java.util.List;
 
 public interface ColorDao {
-    List<Color> getAllColors();
-    void saveColor(Phone phone);
-    void deleteColorsFromPone2Color(Phone phone);
+    List<Color> getAll();
+
+    void save(Phone phone);
+
+    void delete(Phone phone);
 }

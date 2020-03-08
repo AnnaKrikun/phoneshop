@@ -1,11 +1,11 @@
-package com.es.core.dao;
+package com.es.core.service;
 
 import com.es.core.model.phone.Phone;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface PhoneDao {
+public interface PhoneService {
     Optional<Phone> get(Long key);
 
     void save(Phone phone);

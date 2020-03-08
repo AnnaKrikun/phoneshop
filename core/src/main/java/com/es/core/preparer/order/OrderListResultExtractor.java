@@ -1,4 +1,4 @@
-package com.es.core.configurer.order;
+package com.es.core.preparer.order;
 
 import com.es.core.model.order.Order;
 import com.es.core.model.order.OrderItem;
@@ -13,14 +13,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.es.core.constants.FieldConstants.*;
+import static com.es.core.constants.FieldConstants.ORDER_ID;
 
 @Component
 public class OrderListResultExtractor extends OrderResultExtractor implements ResultSetExtractor<List<Order>> {
     @Override
     public List<Order> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
         Map<Long, Order> orderMap = new HashMap<>();
-        Map<Long, OrderItem> orderItemMap= new HashMap<>();
+        Map<Long, OrderItem> orderItemMap = new HashMap<>();
         List<Order> orderList = new ArrayList<>();
 
         while (resultSet.next()) {

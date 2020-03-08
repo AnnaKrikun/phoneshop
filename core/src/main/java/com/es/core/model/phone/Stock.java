@@ -2,8 +2,8 @@ package com.es.core.model.phone;
 
 public class Stock {
     private Phone phone;
-    private Integer stock;
-    private Integer reserved;
+    private long stock;
+    private long reserved;
 
     public Stock() {
     }
@@ -22,7 +22,7 @@ public class Stock {
         this.phone = phone;
     }
 
-    public Integer getStock() {
+    public long getStock() {
         return stock;
     }
 
@@ -30,7 +30,7 @@ public class Stock {
         this.stock = stock;
     }
 
-    public Integer getReserved() {
+    public long getReserved() {
         return reserved;
     }
 

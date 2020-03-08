@@ -6,9 +6,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface StockService {
-    List<Stock> getStocks(List<Long> phoneIds);
-    List<Stock> getPositiveStocks(List<Long> phoneIds);
-    Optional<Stock> getStockById(Long phoneId);
+    List<Stock> getByPhoneIds(List<Long> phoneIds);
+
+    List<Stock> getPositiveByPhoneIds(List<Long> phoneIds);
+
+    Optional<Stock> getByPhoneId(Long phoneId);
+
     void update(Long phoneId, Long reserved);
+
     Long getAvailableStock(Long phoneId);
 }

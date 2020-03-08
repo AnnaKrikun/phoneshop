@@ -3,6 +3,7 @@ package com.es.phoneshop.web.controller.pages;
 import com.es.core.dao.PhoneDao;
 import com.es.core.model.phone.Phone;
 import com.es.core.service.CartService;
+import com.es.core.service.PhoneService;
 import com.es.phoneshop.web.exception.PageNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,13 +23,13 @@ public class ProductDetailsPageController {
     private static final String CART = "cart";
 
     @Resource
-    private PhoneDao phoneDao;
+    private PhoneService phoneService;
     @Resource
     private CartService cartService;
 
     @GetMapping
     public String showProductList(@PathVariable Long phoneId, Model model) {
-        Phone phone = phoneDao.get(phoneId).orElseThrow(PageNotFoundException::new);
+        Phone phone = phoneService.get(phoneId).orElseThrow(PageNotFoundException::new);
         model.addAttribute(PHONE, phone);
         model.addAttribute(CART, cartService.getCart());
         return PRODUCT_DETAILS_PAGE_NAME;

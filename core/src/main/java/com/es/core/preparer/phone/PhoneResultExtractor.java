@@ -1,4 +1,4 @@
-package com.es.core.configurer.phone;
+package com.es.core.preparer.phone;
 
 import com.es.core.model.phone.Color;
 import com.es.core.model.phone.Phone;

@@ -1,7 +1,6 @@
 package com.es.core.service;
 
 import com.es.core.dao.PhoneDao;
-import com.es.core.dao.StockDao;
 import com.es.core.exception.OutOfStockException;
 import com.es.core.exception.ProductNotFoundException;
 import com.es.core.model.cart.Cart;
@@ -11,7 +10,6 @@ import com.es.core.model.phone.Phone;
 import com.es.core.model.phone.Stock;
 import com.es.core.service.impl.SessionCartService;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -281,10 +279,10 @@ public class SessionCartServiceTest {
     }
 
     private void initMockStockService() {
-        when(mockStockService.getStockById(isA(Long.class))).thenReturn(Optional.empty());
+        when(mockStockService.getByPhoneId(isA(Long.class))).thenReturn(Optional.empty());
         when(mockStockService.getAvailableStock(isA(Long.class))).thenReturn(0L);
         for (Stock stock : stockList) {
-            when(mockStockService.getStockById(stock.getPhone().getId())).thenReturn(Optional.of(stock));
+            when(mockStockService.getByPhoneId(stock.getPhone().getId())).thenReturn(Optional.of(stock));
             when(mockStockService.getAvailableStock(stock.getPhone().getId())).thenReturn((long)STOCK-RESERVED);
         }
     }

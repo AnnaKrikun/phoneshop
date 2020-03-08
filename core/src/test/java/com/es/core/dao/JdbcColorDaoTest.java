@@ -39,7 +39,7 @@ public class JdbcColorDaoTest {
     @Test
     @DirtiesContext
     public void shouldGetAllColorsCorrectlyWhenGetColors() {
-        List<Color> colorDaoList = colorDao.getAllColors();
+        List<Color> colorDaoList = colorDao.getAll();
 
         Assert.isTrue(colorDaoList.size() == colorList.size(), ERROR_SIZES + colorList.size()
                 + " / " + colorDaoList.size());

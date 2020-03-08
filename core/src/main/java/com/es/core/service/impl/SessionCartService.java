@@ -45,7 +45,7 @@ public class SessionCartService extends CalculationServiceImpl implements CartSe
     }
 
     private void addCartItem(Phone phoneToAdd, Long quantity, Stock phoneStock) {
-        Integer available = phoneStock.getStock() - phoneStock.getReserved();
+        long available = phoneStock.getStock() - phoneStock.getReserved();
         Optional<CartItem> optionalCartItem = findOptionalCartItem(phoneToAdd.getId());
         if (optionalCartItem.isPresent()) {
             updateCartItem(optionalCartItem.get(), quantity, available);
@@ -54,14 +54,14 @@ public class SessionCartService extends CalculationServiceImpl implements CartSe
         }
     }
 
-    private void addNewCartItem(Phone phoneToAdd, Long quantity, Integer available) {
+    private void addNewCartItem(Phone phoneToAdd, Long quantity, long available) {
         if (quantity > available) {
             throw new OutOfStockException();
         }
         cart.getCartItems().add(new CartItem(phoneToAdd, quantity));
     }
 
-    private void updateCartItem(CartItem cartItem, Long quantity, Integer available) {
+    private void updateCartItem(CartItem cartItem, Long quantity, long available) {
         Long newQuantity = cartItem.getQuantity() + quantity;
         if (quantity > available) {
             throw new OutOfStockException();
@@ -70,7 +70,7 @@ public class SessionCartService extends CalculationServiceImpl implements CartSe
     }
 
     private Stock checkStock(Long phoneId) {
-        Optional<Stock> phoneStock = stockService.getStockById(phoneId);
+        Optional<Stock> phoneStock = stockService.getByPhoneId(phoneId);
         if (!phoneStock.isPresent()) {
             throw new ProductNotFoundException(phoneId);
         }

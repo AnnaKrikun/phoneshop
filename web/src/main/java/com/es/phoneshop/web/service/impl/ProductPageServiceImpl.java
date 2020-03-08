@@ -1,7 +1,7 @@
 package com.es.phoneshop.web.service.impl;
 
-import com.es.core.dao.PhoneDao;
 import com.es.core.model.phone.Phone;
+import com.es.core.service.PhoneService;
 import com.es.phoneshop.web.page.Pagination;
 import com.es.phoneshop.web.page.ProductListPage;
 import com.es.phoneshop.web.service.PageService;
@@ -17,7 +17,7 @@ public class ProductPageServiceImpl implements ProductPageService {
     private PageService pageService;
 
     @Resource
-    private PhoneDao phoneDao;
+    private PhoneService phoneService;
 
     @Override
     public ProductListPage getPhonePage(String searchQuery, String sort, String order, int pageNumber) {
@@ -35,10 +35,10 @@ public class ProductPageServiceImpl implements ProductPageService {
     }
 
     private List<Phone> getPhoneList(String searchQuery, String sort, String order, int offset, int limit) {
-        return phoneDao.getPhonesByQuery(searchQuery, sort, order, offset, limit);
+        return phoneService.getPhonesByQuery(searchQuery, sort, order, offset, limit);
     }
 
     private int countPhonesByQuery(String searchQuery) {
-        return phoneDao.countPhonesByQuery(searchQuery);
+        return phoneService.countPhonesByQuery(searchQuery);
     }
 }

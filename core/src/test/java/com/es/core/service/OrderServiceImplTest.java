@@ -1,6 +1,8 @@
 package com.es.core.service;
 
 import com.es.core.dao.OrderDao;
+import com.es.core.dao.OrderItemDao;
+import com.es.core.dao.StockDao;
 import com.es.core.exception.OrderNotFoundException;
 import com.es.core.exception.OutOfStockException;
 import com.es.core.model.cart.Cart;
@@ -38,10 +40,14 @@ public class OrderServiceImplTest {
     @Mock
     private OrderDao orderDao;
     @Mock
+    private OrderItemDao orderItemDao;
+    @Mock
+    private StockDao stockDao;
+    @Mock
     private CartService cartService;
 
     @InjectMocks
-    private OrderService orderService = new OrderServiceImpl(orderDao, cartService);
+    private OrderService orderService = new OrderServiceImpl(orderDao, cartService, orderItemDao, stockDao);
 
     private BigDecimal deliveryPrice = new BigDecimal(5);
     private List<Phone> phoneList;
@@ -107,7 +113,7 @@ public class OrderServiceImplTest {
 
         when(orderDao.get(ORDER_ID)).thenReturn(Optional.of(order));
 
-        Order newOrder = orderService.getOrder(ORDER_ID).get();
+        Order newOrder = orderService.get(ORDER_ID).get();
 
         verify(orderDao).get(eq(ORDER_ID));
 
@@ -118,7 +124,7 @@ public class OrderServiceImplTest {
     public void shouldGetNotExistingOrderSuccessfully() {
         when(orderDao.get(ORDER_ID)).thenReturn(Optional.empty());
 
-        Optional<Order> orderOptional = orderService.getOrder(ORDER_ID);
+        Optional<Order> orderOptional = orderService.get(ORDER_ID);
 
         verify(orderDao).get(eq(ORDER_ID));
 
@@ -137,7 +143,7 @@ public class OrderServiceImplTest {
 
         when(orderDao.getAll(OFFSET, LIMIT)).thenReturn(orderList);
 
-        List<Order> findAllOrderList = orderService.getAllOrders(OFFSET, LIMIT);
+        List<Order> findAllOrderList = orderService.getAll(OFFSET, LIMIT);
 
         verify(orderDao).getAll(OFFSET, LIMIT);
 

@@ -1,10 +1,10 @@
-package com.es.core.configurer.order;
+package com.es.core.preparer.order;
 
-import com.es.core.configurer.phone.PhoneResultExtractor;
 import com.es.core.model.order.Order;
 import com.es.core.model.order.OrderItem;
 import com.es.core.model.order.OrderStatus;
 import com.es.core.model.phone.Phone;
+import com.es.core.preparer.phone.PhoneResultExtractor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

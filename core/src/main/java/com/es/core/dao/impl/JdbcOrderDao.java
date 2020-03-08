@@ -1,14 +1,11 @@
 package com.es.core.dao.impl;
 
-import com.es.core.configurer.order.OrderListResultExtractor;
-import com.es.core.configurer.order.OrderParametersPreparer;
 import com.es.core.dao.OrderDao;
-import com.es.core.dao.OrderItemDao;
-import com.es.core.dao.StockDao;
-import com.es.core.exception.OrderNotFoundException;
 import com.es.core.exception.OutOfStockException;
 import com.es.core.model.order.Order;
 import com.es.core.model.order.OrderStatus;
+import com.es.core.preparer.order.OrderListResultExtractor;
+import com.es.core.preparer.order.OrderParametersPreparer;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -19,9 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 @Transactional(rollbackFor = OutOfStockException.class)
@@ -63,17 +58,13 @@ public class JdbcOrderDao implements OrderDao {
     private OrderListResultExtractor orderListResultExtractor;
     private OrderParametersPreparer orderParametersPreparer;
     private SimpleJdbcInsert simpleJdbcInsert;
-    private OrderItemDao orderItemDao;
-    private StockDao stockDao;
 
     @Autowired
     public JdbcOrderDao(JdbcTemplate jdbcTemplate, OrderListResultExtractor orderListResultExtractor,
-                        OrderParametersPreparer orderParametersPreparer, OrderItemDao orderItemDao, StockDao stockDao) {
+                        OrderParametersPreparer orderParametersPreparer) {
         this.jdbcTemplate = jdbcTemplate;
         this.orderListResultExtractor = orderListResultExtractor;
         this.orderParametersPreparer = orderParametersPreparer;
-        this.orderItemDao = orderItemDao;
-        this.stockDao = stockDao;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName(ORDERS_TABLE_NAME)
                 .usingGeneratedKeyColumns(GENERATED_KEY_COLUMN);
@@ -107,18 +98,7 @@ public class JdbcOrderDao implements OrderDao {
 
     @Override
     public void updateOrderStatus(Long id, OrderStatus orderStatus) {
-        Order order = get(id).orElseThrow(OrderNotFoundException::new);
-        Map<Long, Long> phoneIdsWithQuantities = order.getOrderItems().stream()
-                .collect(Collectors.toMap(orderItem -> orderItem.getPhone().getId(), orderItem -> orderItem.getQuantity()));
         jdbcTemplate.update(UPDATE_ORDER_STATUS, orderStatus.name(), id);
-        switch (orderStatus) {
-            case REJECTED:
-                stockDao.updateRejected(phoneIdsWithQuantities);
-                break;
-            case DELIVERED:
-                stockDao.updateDelivered(phoneIdsWithQuantities);
-                break;
-        }
     }
 
     private void saveOrder(Order order) {
@@ -126,7 +106,6 @@ public class JdbcOrderDao implements OrderDao {
             SqlParameterSource sqlParameterSource = orderParametersPreparer.fillMapForSavingSQL(order);
             Long orderId = simpleJdbcInsert.executeAndReturnKey(sqlParameterSource).longValue();
             order.setId(orderId);
-            orderItemDao.saveOrderItems(order.getOrderItems());
         } catch (DataAccessException e) {
             throw new OutOfStockException();
         }

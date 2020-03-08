@@ -1,10 +1,10 @@
 package com.es.core.dao.impl;
 
-import com.es.core.configurer.order.OrderItemParametersPreparer;
 import com.es.core.dao.OrderItemDao;
 import com.es.core.dao.StockDao;
 import com.es.core.exception.OutOfStockException;
 import com.es.core.model.order.OrderItem;
+import com.es.core.preparer.order.OrderItemParametersPreparer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -38,12 +38,12 @@ public class JdbcOrderItemDao implements OrderItemDao {
     }
 
     @Override
-    public void saveOrderItems(List<OrderItem> orderItems) throws OutOfStockException {
-        orderItems.forEach(orderItem -> saveOrderItem(orderItem));
+    public void save(List<OrderItem> orderItems) throws OutOfStockException {
+        orderItems.forEach(orderItem -> save(orderItem));
     }
 
     @Override
-    public void saveOrderItem(OrderItem orderItem) {
+    public void save(OrderItem orderItem) {
         try {
             Map<String, Object> parameters = orderItemParametersPreparer.fillMapForSaving(orderItem);
             Long newId = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();

@@ -10,9 +10,14 @@ import java.util.Optional;
 
 public interface OrderService {
     Order createOrder(Cart cart);
+
     void placeOrder(Order order) throws OutOfStockException;
-    Optional<Order> getOrder(Long orderId);
-    List<Order> getAllOrders(int offset, int limit);
+
+    Optional<Order> get(Long orderId);
+
+    List<Order> getAll(int offset, int limit);
+
     int countOrders();
+
     void updateOrderStatus(Long id, OrderStatus orderStatus);
 }

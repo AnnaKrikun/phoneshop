@@ -1,8 +1,9 @@
 package com.es.core.dao;
 
-import com.es.core.dao.StockDao;
 import com.es.core.exception.OutOfStockException;
+import com.es.core.model.order.OrderStatus;
 import com.es.core.model.phone.Stock;
+import com.es.core.service.OrderService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +42,7 @@ public class JdbcStockDaoTest {
     @Test
     @DirtiesContext
     public void shouldGetStocksByIds() {
-        List<Stock> stocks = stockDao.getStocks(phoneIds);
+        List<Stock> stocks = stockDao.getByPhoneIds(phoneIds);
 
         Assert.isTrue(stocks.size() == EXPECTED, ERROR_IN_GET_STOCKS + stocks.size() +
                 " / " + EXPECTED);
@@ -51,7 +52,7 @@ public class JdbcStockDaoTest {
     @Test
     @DirtiesContext
     public void shouldGetPositiveStocksByIds() {
-        List<Stock> stocks = stockDao.getPositiveStocks(phoneIds);
+        List<Stock> stocks = stockDao.getPositiveByPhoneIds(phoneIds);
 
         Assert.isTrue(stocks.size() == EXPECTED_POSITIVE, ERROR_IN_GET_STOCKS + stocks.size() +
                 " / " + EXPECTED_POSITIVE);
@@ -60,7 +61,7 @@ public class JdbcStockDaoTest {
     @Test
     @DirtiesContext
     public void shouldGetStockById() {
-        Optional<Stock> stock = stockDao.getStockById(phoneIds.get(1));
+        Optional<Stock> stock = stockDao.getByPhoneId(phoneIds.get(1));
 
         Assert.isTrue(stock.isPresent(), ERROR_STOCK_NOT_FOUND);
     }
@@ -68,7 +69,7 @@ public class JdbcStockDaoTest {
     @Test
     @DirtiesContext
     public void shouldNotGetStockByNotExistingId() {
-        Optional<Stock> stock = stockDao.getStockById(NOT_EXISTING_ID);
+        Optional<Stock> stock = stockDao.getByPhoneId(NOT_EXISTING_ID);
 
         Assert.isTrue(!stock.isPresent(), ERROR_STOCK_FOUND);
     }
@@ -76,76 +77,80 @@ public class JdbcStockDaoTest {
     @Test
     @DirtiesContext
     public void shouldUpdateStockById() {
-        Optional<Stock> stock = stockDao.getStockById(phoneIds.get(1));
+        Optional<Stock> stock = stockDao.getByPhoneId(phoneIds.get(1));
         Assert.isTrue(stock.isPresent(), ERROR_STOCK_NOT_FOUND);
         Assert.isTrue(stock.get().getReserved() == 1, ERROR_INCORRECT_RESERVED_AMOUNT);
 
         stockDao.updateNew(phoneIds.get(1), RESERVED_AMOUNT);
 
-        stock = stockDao.getStockById(phoneIds.get(1));
+        stock = stockDao.getByPhoneId(phoneIds.get(1));
         Assert.isTrue(stock.isPresent(), ERROR_STOCK_NOT_FOUND);
-        Assert.isTrue(stock.get().getReserved().longValue() == RESERVED_AMOUNT + 1, ERROR_INCORRECT_RESERVED_AMOUNT);
+        Assert.isTrue(stock.get().getReserved() == RESERVED_AMOUNT + 1, ERROR_INCORRECT_RESERVED_AMOUNT);
     }
 
     @Test(expected = OutOfStockException.class)
     @DirtiesContext
     public void shouldThrowOutOfStockExceptionWhenUpdateOutOfStockById() {
-        Optional<Stock> stock = stockDao.getStockById(phoneIds.get(1));
+        Optional<Stock> stock = stockDao.getByPhoneId(phoneIds.get(1));
         Assert.isTrue(stock.isPresent(), ERROR_STOCK_NOT_FOUND);
         Assert.isTrue(stock.get().getReserved() == 1, ERROR_INCORRECT_RESERVED_AMOUNT);
 
         stockDao.updateNew(phoneIds.get(1), 15L);
 
-        stock = stockDao.getStockById(phoneIds.get(1));
+        stock = stockDao.getByPhoneId(phoneIds.get(1));
         Assert.isTrue(stock.isPresent(), ERROR_STOCK_NOT_FOUND);
-        Assert.isTrue(stock.get().getReserved().longValue() == 1, ERROR_INCORRECT_RESERVED_AMOUNT);
+        Assert.isTrue(stock.get().getReserved() == 1, ERROR_INCORRECT_RESERVED_AMOUNT);
     }
 
     @Test
     @DirtiesContext
     public void shouldUpdateDeliveredStockById() {
-        Optional<Stock> stock = stockDao.getStockById(phoneIds.get(1));
+        Optional<Stock> stock = stockDao.getByPhoneId(phoneIds.get(1));
         Assert.isTrue(stock.isPresent(), ERROR_STOCK_NOT_FOUND);
         Assert.isTrue(stock.get().getReserved() == 1, ERROR_INCORRECT_RESERVED_AMOUNT);
         Assert.isTrue(stock.get().getStock() == 12, ERROR_INCORRECT_RESERVED_AMOUNT);
 
         Map<Long, Long> map = new HashMap<>();
         map.put(phoneIds.get(1), RESERVED_AMOUNT);
-        stockDao.updateDelivered(map);
+        Map<OrderStatus,Map<Long, Long>> mapForUpdate = new HashMap<>();
+        mapForUpdate.put(OrderStatus.DELIVERED, map);
+        stockDao.update(mapForUpdate);
 
-        stock = stockDao.getStockById(phoneIds.get(1));
+        stock = stockDao.getByPhoneId(phoneIds.get(1));
         Assert.isTrue(stock.isPresent(), ERROR_STOCK_NOT_FOUND);
-        Assert.isTrue(stock.get().getReserved().longValue() == 1 - RESERVED_AMOUNT, ERROR_INCORRECT_RESERVED_AMOUNT);
-        Assert.isTrue(stock.get().getStock().longValue() == 12 - RESERVED_AMOUNT, ERROR_INCORRECT_RESERVED_AMOUNT);
+        Assert.isTrue(stock.get().getReserved() == 1 - RESERVED_AMOUNT, ERROR_INCORRECT_RESERVED_AMOUNT);
+        Assert.isTrue(stock.get().getStock() == 12 - RESERVED_AMOUNT, ERROR_INCORRECT_RESERVED_AMOUNT);
     }
 
     @Test
     @DirtiesContext
     public void shouldUpdateRejectedStockById() {
-        Optional<Stock> stock = stockDao.getStockById(phoneIds.get(1));
+        Optional<Stock> stock = stockDao.getByPhoneId(phoneIds.get(1));
         Assert.isTrue(stock.isPresent(), ERROR_STOCK_NOT_FOUND);
         Assert.isTrue(stock.get().getReserved() == 1, ERROR_INCORRECT_RESERVED_AMOUNT);
         Assert.isTrue(stock.get().getStock() == 12, ERROR_INCORRECT_RESERVED_AMOUNT);
 
         Map<Long, Long> map = new HashMap<>();
         map.put(phoneIds.get(1), RESERVED_AMOUNT);
-        stockDao.updateRejected(map);
+        Map<OrderStatus,Map<Long, Long>> mapForUpdate = new HashMap<>();
+        mapForUpdate.put(OrderStatus.REJECTED, map);
+        stockDao.update(mapForUpdate);
 
-        stock = stockDao.getStockById(phoneIds.get(1));
+        stock = stockDao.getByPhoneId(phoneIds.get(1));
         Assert.isTrue(stock.isPresent(), ERROR_STOCK_NOT_FOUND);
-        Assert.isTrue(stock.get().getReserved().longValue() == 1 - RESERVED_AMOUNT, ERROR_INCORRECT_RESERVED_AMOUNT);
-        Assert.isTrue(stock.get().getStock().longValue() == 12, ERROR_INCORRECT_RESERVED_AMOUNT);
+        Assert.isTrue(stock.get().getReserved() == 1 - RESERVED_AMOUNT, ERROR_INCORRECT_RESERVED_AMOUNT);
+        Assert.isTrue(stock.get().getStock() == 12, ERROR_INCORRECT_RESERVED_AMOUNT);
     }
 
     @Test(expected = OutOfStockException.class)
     @DirtiesContext
     public void shouldNotUpdateStockByNotExistingId() {
-        Optional<Stock> stock = stockDao.getStockById(NOT_EXISTING_ID);
+        Optional<Stock> stock = stockDao.getByPhoneId(NOT_EXISTING_ID);
         Assert.isTrue(!stock.isPresent(), ERROR_STOCK_FOUND);
 
         stockDao.updateNew(NOT_EXISTING_ID, RESERVED_AMOUNT);
 
-        stock = stockDao.getStockById(NOT_EXISTING_ID);
+        stock = stockDao.getByPhoneId(NOT_EXISTING_ID);
         Assert.isTrue(!stock.isPresent(), ERROR_STOCK_FOUND);
     }
 

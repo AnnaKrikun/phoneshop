@@ -49,7 +49,7 @@ public class StockServiceImplTest {
     public void shouldGetAvailableStockCorrectly(){
         Long availableStock = stockService.getAvailableStock(phoneList.get(0).getId());
 
-        verify(mockStockDao).getStockById(phoneList.get(0).getId());
+        verify(mockStockDao).getByPhoneId(phoneList.get(0).getId());
         Assert.isTrue(availableStock.equals(EXPECTED_AVAILABLE_STOCK), ERROR);
     }
 
@@ -57,23 +57,23 @@ public class StockServiceImplTest {
     public void shouldGetAvailableStockOfNotExistingCorrectly(){
         Long availableStock = stockService.getAvailableStock(100L);
 
-        verify(mockStockDao).getStockById(100L);
+        verify(mockStockDao).getByPhoneId(100L);
         Assert.isTrue(availableStock.equals(EXPECTED_ZERO_AVAILABLE_STOCK), ERROR);
     }
 
     @Test
     public void shouldGetStocksCorrectly(){
-        List<Stock> stocks = stockService.getStocks(phoneIds);
+        List<Stock> stocks = stockService.getByPhoneIds(phoneIds);
 
-        verify(mockStockDao).getStocks(phoneIds);
+        verify(mockStockDao).getByPhoneIds(phoneIds);
         Assert.isTrue(stocks.size() == phoneIds.size(), ERROR);
     }
 
     @Test
     public void shouldGetPositiveStocksCorrectly(){
-        List<Stock> stocks = stockService.getPositiveStocks(phoneIds);
+        List<Stock> stocks = stockService.getPositiveByPhoneIds(phoneIds);
 
-        verify(mockStockDao).getPositiveStocks(phoneIds);
+        verify(mockStockDao).getPositiveByPhoneIds(phoneIds);
         Assert.isTrue(stocks.size() == phoneIds.size(), ERROR);
     }
 
@@ -90,12 +90,12 @@ public class StockServiceImplTest {
     }
 
     private void initMockStockDao() {
-        when(mockStockDao.getStockById(isA(Long.class))).thenReturn(Optional.empty());
+        when(mockStockDao.getByPhoneId(isA(Long.class))).thenReturn(Optional.empty());
         for (Stock stock : stockList) {
-            when(mockStockDao.getStockById(stock.getPhone().getId())).thenReturn(Optional.of(stock));
+            when(mockStockDao.getByPhoneId(stock.getPhone().getId())).thenReturn(Optional.of(stock));
         }
-        when(mockStockDao.getStocks(phoneIds)).thenReturn(stockList);
-        when(mockStockDao.getPositiveStocks(phoneIds)).thenReturn(stockList);
+        when(mockStockDao.getByPhoneIds(phoneIds)).thenReturn(stockList);
+        when(mockStockDao.getPositiveByPhoneIds(phoneIds)).thenReturn(stockList);
     }
 
     private void initPhoneList() {

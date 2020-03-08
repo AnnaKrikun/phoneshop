@@ -1,10 +1,10 @@
 package com.es.core.dao.impl;
 
-import com.es.core.configurer.phone.PhoneListResultSetExtractor;
-import com.es.core.configurer.phone.PhoneParametersPreparer;
 import com.es.core.dao.ColorDao;
 import com.es.core.dao.PhoneDao;
 import com.es.core.model.phone.Phone;
+import com.es.core.preparer.phone.PhoneListResultSetExtractor;
+import com.es.core.preparer.phone.PhoneParametersPreparer;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -94,7 +94,7 @@ public class JdbcPhoneDao implements PhoneDao {
         return Optional.empty();
     }
 
-    public List<Phone> findAll(int offset, int limit) {
+    public List<Phone> getAll(int offset, int limit) {
         return jdbcTemplate.query(SELECT_ALL_PHONES_QUERY, phoneListResultSetExtractor, offset, limit);
     }
 
@@ -124,8 +124,8 @@ public class JdbcPhoneDao implements PhoneDao {
 
     private void updatePhone(Phone phone) {
         jdbcTemplate.update(UPDATE_PHONE, parametersPreparer.getPreparedParameters(phone));
-        colorDao.deleteColorsFromPone2Color(phone);
-        colorDao.saveColor(phone);
+        colorDao.delete(phone);
+        colorDao.save(phone);
     }
 
     private void savePhone(Phone phone) {
@@ -133,7 +133,7 @@ public class JdbcPhoneDao implements PhoneDao {
         try {
             Long phoneId = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
             phone.setId(phoneId);
-            colorDao.saveColor(phone);
+            colorDao.save(phone);
         } catch (DataIntegrityViolationException e) {
             throw new IllegalArgumentException(DUPLICATE_ENTRY_MESSAGE, e);
         }

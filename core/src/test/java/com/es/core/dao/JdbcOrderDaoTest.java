@@ -133,12 +133,6 @@ public class JdbcOrderDaoTest {
                 ERROR_IN_GET_ALL_ORDERS + orders.size() + " " + LIMIT_SUCCESS);
     }
 
-    @Test(expected = OrderNotFoundException.class)
-    @DirtiesContext
-    public void shouldThrowOrderNotFoundExceptionWhenUpdateNotExistingOrder() {
-        orderDao.updateOrderStatus(NOT_EXISTING_KEY, OrderStatus.DELIVERED);
-    }
-
     @Test
     @DirtiesContext
     public void shouldUpdateOrderStatusToRejectedSuccessfully() {

@@ -34,6 +34,6 @@ public class OrdersPageServiceImpl implements OrdersPageService {
     }
 
     private List<Order> getOrderList(int offset, int limit) {
-        return orderService.getAllOrders(offset, limit);
+        return orderService.getAll(offset, limit);
     }
 }

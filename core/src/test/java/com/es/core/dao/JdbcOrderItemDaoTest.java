@@ -57,7 +57,7 @@ public class JdbcOrderItemDaoTest {
     public void shouldSaveOrderItemSuccessfully() {
         Long amountBeforeSave = jdbcTemplateTest.queryForObject(COUNT_ORDER_ITEMS, Long.class);
 
-        orderItemDao.saveOrderItem(orderItem);
+        orderItemDao.save(orderItem);
 
         Long amountAfterSave = jdbcTemplateTest.queryForObject(COUNT_ORDER_ITEMS, Long.class);
 
@@ -65,8 +65,8 @@ public class JdbcOrderItemDaoTest {
                 ERROR_IN_PHONE_SAVE + ADDED_ORDER_ITEM + " / " + (amountAfterSave - amountBeforeSave));
     }
 
-    @Ignore
-    @Test
+
+    @Test(expected = OutOfStockException.class)
     @DirtiesContext
     public void shouldThrowOutOfStockWhenAddOutOfStock() {
         Long amountBeforeSave = jdbcTemplateTest.queryForObject(COUNT_ORDER_ITEMS, Long.class);
@@ -75,12 +75,7 @@ public class JdbcOrderItemDaoTest {
         orderItem.setPhone(phone);
         orderItem.setQuantity(15L);
 
-        orderItemDao.saveOrderItem(orderItem);
-
-        Long amountAfterSave = jdbcTemplateTest.queryForObject(COUNT_ORDER_ITEMS, Long.class);
-
-        Assert.isTrue(ADDED_ORDER_ITEM.equals(amountAfterSave - amountBeforeSave),
-                ERROR_IN_PHONE_SAVE + ADDED_ORDER_ITEM + " / " + (amountAfterSave - amountBeforeSave));
+        orderItemDao.save(orderItem);
     }
 
     @Test
@@ -93,7 +88,7 @@ public class JdbcOrderItemDaoTest {
         orderItem.setId(1003L);
         orderItems.add(orderItem);
 
-        orderItemDao.saveOrderItems(orderItems);
+        orderItemDao.save(orderItems);
 
         Long amountAfterSave = jdbcTemplateTest.queryForObject(COUNT_ORDER_ITEMS, Long.class);
 

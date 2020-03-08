@@ -37,7 +37,7 @@ public class OrdersPageController {
 
     @GetMapping(ID)
     public String showOrders(@PathVariable Long id, Model model) {
-        Order order = orderService.getOrder(id).orElseThrow(PageNotFoundException::new);
+        Order order = orderService.get(id).orElseThrow(PageNotFoundException::new);
         model.addAttribute(ORDER, order);
         return ADMIN_ORDER_DETAILS_PAGE_NAME;
     }

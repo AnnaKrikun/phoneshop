@@ -1,4 +1,4 @@
-package com.es.core.configurer.phone;
+package com.es.core.preparer.phone;
 
 import com.es.core.model.phone.Phone;
 import org.springframework.dao.DataAccessException;
@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.es.core.constants.FieldConstants.*;
+import static com.es.core.constants.FieldConstants.PHONE_ID;
 
 @Component
 public class PhoneListResultSetExtractor extends PhoneResultExtractor implements ResultSetExtractor<List<Phone>> {
