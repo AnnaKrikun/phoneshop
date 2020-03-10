@@ -20,6 +20,7 @@ import static com.es.phoneshop.web.constants.ControllerConstants.*;
 @Controller
 @RequestMapping(value = CART_MAPPING)
 public class CartPageController {
+
     private static final String PHONE_ID = "phoneId";
     private static final String UPDATE = "update";
     private static final String REMOVE = "remove";

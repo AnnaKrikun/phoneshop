@@ -4,6 +4,7 @@ import com.es.core.dao.OrderDao;
 import com.es.core.dao.OrderItemDao;
 import com.es.core.dao.StockDao;
 import com.es.core.exception.OrderNotFoundException;
+import com.es.core.exception.OutOfStockException;
 import com.es.core.model.cart.Cart;
 import com.es.core.model.order.Order;
 import com.es.core.model.order.OrderItem;
@@ -13,12 +14,14 @@ import com.es.core.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(rollbackFor = OutOfStockException.class)
 public class OrderServiceImpl implements OrderService {
     @Value("${deliveryPrice}")
     private BigDecimal deliveryPrice;

@@ -7,4 +7,6 @@
     <context:property-placeholder location="/WEB-INF/conf/application.properties"/>
     <import resource="classpath:context/applicationContext-core.xml"/>
     <import resource="classpath:context/applicationContext-demoda.xml"/>
+
+    <bean class="com.es.phoneshop.web.security.SecurityConfig"/>
 </beans>
