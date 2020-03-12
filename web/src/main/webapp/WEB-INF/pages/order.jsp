@@ -31,7 +31,7 @@
                 <td>
                     <a href="<c:url value="/productDetails/${orderItem.phone.id}"/>">
                         <img src="<c:url value="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${orderItem.phone.imageUrl}"/>"
-                             style="width: 72px; height: 72px;">
+                             class="picture">
                     </a>
                 </td>
                 <td>

@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -160,7 +159,7 @@ public class JdbcPhoneDaoTest {
     @Test
     @DirtiesContext
     public void shouldFindAllPhonesSuccessfully() {
-        phones = phoneDao.findAll(OFFSET_SUCCESS, LIMIT_SUCCESS);
+        phones = phoneDao.getAll(OFFSET_SUCCESS, LIMIT_SUCCESS);
 
         Assert.isTrue(phones.size() == LIMIT_SUCCESS,
                 ERROR_IN_FIND_ALL_PHONES + phones.size() + " " + LIMIT_SUCCESS);
@@ -169,7 +168,7 @@ public class JdbcPhoneDaoTest {
     @Test
     @DirtiesContext
     public void shouldNotFindAllPhonesWithOutOfRangeOffset() {
-        phones = phoneDao.findAll(OFFSET_OUT_OF_RANGE, LIMIT_SUCCESS);
+        phones = phoneDao.getAll(OFFSET_OUT_OF_RANGE, LIMIT_SUCCESS);
 
         Assert.isTrue(phones.isEmpty(), ERROR_IN_FIND_ALL_PHONES + phones.size() + "/" + ZERO_SIZE);
     }
@@ -177,7 +176,7 @@ public class JdbcPhoneDaoTest {
     @Test
     @DirtiesContext
     public void shouldNotFindAllPhonesWithZeroLimit() {
-        phones = phoneDao.findAll(OFFSET_SUCCESS, LIMIT_ZERO);
+        phones = phoneDao.getAll(OFFSET_SUCCESS, LIMIT_ZERO);
 
         Assert.isTrue(phones.isEmpty(), ERROR_IN_FIND_ALL_PHONES + phones.size() + "/" + ZERO_SIZE);
     }
@@ -185,7 +184,7 @@ public class JdbcPhoneDaoTest {
     @Test
     @DirtiesContext
     public void shouldNotFindAllPhonesWithOutOfRangeOffsetAndLimit() {
-        phones = phoneDao.findAll(OFFSET_OUT_OF_RANGE, LIMIT_OUT_OF_RANGE_POSITIVE);
+        phones = phoneDao.getAll(OFFSET_OUT_OF_RANGE, LIMIT_OUT_OF_RANGE_POSITIVE);
 
         Assert.isTrue(phones.isEmpty(), ERROR_IN_FIND_ALL_PHONES + phones.size() + "/" + ZERO_SIZE);
     }
@@ -193,7 +192,7 @@ public class JdbcPhoneDaoTest {
     @Test
     @DirtiesContext
     public void shouldNotFindAllPhonesWithZeroOffsetAndLimit() {
-        phones = phoneDao.findAll(OFFSET_ZERO, LIMIT_ZERO);
+        phones = phoneDao.getAll(OFFSET_ZERO, LIMIT_ZERO);
 
         Assert.isTrue(phones.isEmpty(), ERROR_IN_FIND_ALL_PHONES + phones.size() + "/" + ZERO_SIZE);
     }

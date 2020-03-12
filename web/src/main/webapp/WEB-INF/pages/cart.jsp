@@ -11,106 +11,114 @@
         </a>
     </p>
 
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <th scope="col">Image</th>
-            <th scope="col">Brand</th>
-            <th scope="col">Model</th>
-            <th scope="col">Color</th>
-            <th scope="col">Display size</th>
-            <th scope="col">Quantity</th>
-            <th scope="col">Price</th>
-            <th scope="col">Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <form:form method="post" modelAttribute="cartDisplay">
-            <input type="hidden" name="_method" value="PUT"/>
-            <input type="hidden" name="phoneId"/>
-            <c:forEach var="orderItem" items="${cartDisplay.cartDisplayItems}" varStatus="i">
+    <c:choose>
+        <c:when test="${not empty cartDisplay.cartDisplayItems}">
+            <table class="table table-hover">
+                <thead>
                 <tr>
-                    <td>
-                        <a href="<c:url value="/productDetails/${orderItem.phoneId}"/>">
-                            <img src="<c:url value="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${orderItem.imageUrl}"/>"
-                                 style="width: 72px; height: 72px;">
-                        </a>
-                    </td>
-                    <td>
-                        <c:out value="${orderItem.brand}"/>
-                    </td>
-                    <td>
-                        <a href="<c:url value="/productDetails/${orderItem.phoneId}"/>">
-                            <c:out value="${orderItem.model}"/>
-                        </a>
-                    </td>
-                    <td>
-                        <c:forEach var="color" items="${orderItem.colors}">
-                            <c:out value="${color.code}"/><br>
-                        </c:forEach>
-                    </td>
-                    <td>
-                        <c:out value="${orderItem.displaySizeInches}"/>"
-                    </td>
-                    <td>
-                        <form:hidden path="cartDisplayItems[${i.index}].phoneId"/>
-                        <form:input path="cartDisplayItems[${i.index}].quantity" class="form-control"/>
-                        <div class="error-message" id="error-message">
-                            <form:errors path="cartDisplayItems[${i.index}].quantity"/>
-                        </div>
-                    </td>
-                    <td>
-                        $<c:out value="${orderItem.price}"/>
-                    </td>
-                    <td>
-                        <button type="submit" name="remove" class="btn btn-dark"
-                                onclick="return onDeletePhone(<c:out
-                                        value="${orderItem.phoneId}"/>);">
-                            Remove
-                        </button>
-                    </td>
+                    <th scope="col">Image</th>
+                    <th scope="col">Brand</th>
+                    <th scope="col">Model</th>
+                    <th scope="col">Color</th>
+                    <th scope="col">Display size</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Action</th>
                 </tr>
-            </c:forEach>
-            <tr>
-                <td>  </td>
-                <td>  </td>
-                <td>  </td>
-                <td>  </td>
-                <td>  </td>
-                <td>  </td>
-                <td class="text-center"><h4>Total</h4></td>
-                <td><h5>$<c:out value="${not empty cart ? cart.totalPrice : 0}"/></h5></td>
-            </tr>
-            <tr>
-                <td>  </td>
-                <td>  </td>
-                <td>  </td>
-                <td>  </td>
-                <td>  </td>
-                <td>  </td>
-                <td class="text-right">
-                    <c:if test="${not empty cartDisplay.cartDisplayItems}">
-                        <button name="update" type="submit" class="btn btn-dark">
-                            Update
-                        </button>
-                    </c:if>
-                </td>
-                <td>
-                    <c:if test="${not empty cartDisplay.cartDisplayItems}">
-                        <a href="<c:url value="/order"/> " class="btn btn-dark">
-                            Order
-                        </a>
-                    </c:if>
-                </td>
-            </tr>
-            <script>
-                function onDeletePhone(id) {
-                    $('input[name=_method]').remove();
-                    $('input[name=phoneId]').val(id);
-                    return true;
-                }
-            </script>
-        </form:form>
-        </tbody>
-    </table>
+                </thead>
+                <tbody>
+                <form:form method="post" modelAttribute="cartDisplay">
+                    <input type="hidden" name="_method" value="PUT"/>
+                    <input type="hidden" name="phoneId"/>
+                    <c:forEach var="orderItem" items="${cartDisplay.cartDisplayItems}" varStatus="i">
+                        <tr>
+                            <td>
+                                <a href="<c:url value="/productDetails/${orderItem.phoneId}"/>">
+                                    <img src="<c:url value="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${orderItem.imageUrl}"/>"
+                                         class="picture">
+                                </a>
+                            </td>
+                            <td>
+                                <c:out value="${orderItem.brand}"/>
+                            </td>
+                            <td>
+                                <a href="<c:url value="/productDetails/${orderItem.phoneId}"/>">
+                                    <c:out value="${orderItem.model}"/>
+                                </a>
+                            </td>
+                            <td>
+                                <c:forEach var="color" items="${orderItem.colors}">
+                                    <c:out value="${color.code}"/><br>
+                                </c:forEach>
+                            </td>
+                            <td>
+                                <c:out value="${orderItem.displaySizeInches}"/>"
+                            </td>
+                            <td>
+                                <form:hidden path="cartDisplayItems[${i.index}].phoneId"/>
+                                <form:input path="cartDisplayItems[${i.index}].quantity" class="form-control"/>
+                                <div class="error-message" id="error-message">
+                                    <form:errors path="cartDisplayItems[${i.index}].quantity"/>
+                                </div>
+                            </td>
+                            <td>
+                                $<c:out value="${orderItem.price}"/>
+                            </td>
+                            <td>
+                                <button type="submit" name="remove" class="btn btn-dark"
+                                        onclick="return onDeletePhone(<c:out
+                                                value="${orderItem.phoneId}"/>);">
+                                    Remove
+                                </button>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    <tr>
+                        <td>  </td>
+                        <td>  </td>
+                        <td>  </td>
+                        <td>  </td>
+                        <td>  </td>
+                        <td>  </td>
+                        <td class="text-center"><h4>Total</h4></td>
+                        <td><h5>$<c:out value="${not empty cart ? cart.totalPrice : 0}"/></h5></td>
+                    </tr>
+                    <tr>
+                        <td>  </td>
+                        <td>  </td>
+                        <td>  </td>
+                        <td>  </td>
+                        <td>  </td>
+                        <td>  </td>
+                        <td class="text-right">
+                            <c:if test="${not empty cartDisplay.cartDisplayItems}">
+                                <button name="update" type="submit" class="btn btn-dark">
+                                    Update
+                                </button>
+                            </c:if>
+                        </td>
+                        <td>
+                            <c:if test="${not empty cartDisplay.cartDisplayItems}">
+                                <a href="<c:url value="/order"/> " class="btn btn-dark">
+                                    Order
+                                </a>
+                            </c:if>
+                        </td>
+                    </tr>
+                    <script>
+                        function onDeletePhone(id) {
+                            $('input[name=_method]').remove();
+                            $('input[name=phoneId]').val(id);
+                            return true;
+                        }
+                    </script>
+                </form:form>
+                </tbody>
+            </table>
+        </c:when>
+        <c:otherwise>
+            <p>Cart is Empty!</p>
+        </c:otherwise>
+    </c:choose>
+
 </tags:master>

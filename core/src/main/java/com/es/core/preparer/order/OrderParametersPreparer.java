@@ -1,11 +1,12 @@
-package com.es.core.configurer.order;
+package com.es.core.preparer.order;
 
-import com.es.core.configurer.ParametersPreparer;
 import com.es.core.model.order.Order;
+import com.es.core.preparer.ParametersPreparer;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 
+import java.sql.JDBCType;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,6 +55,7 @@ public class OrderParametersPreparer implements ParametersPreparer<Order> {
         mapSqlParameterSource.addValue(DELIVERY_ADDRESS, order.getDeliveryAddress());
         mapSqlParameterSource.addValue(CONTACT_PHONE_NO, order.getContactPhoneNo());
         mapSqlParameterSource.addValue(ADDITIONAL_INFO, order.getAdditionalInfo());
+        mapSqlParameterSource.addValue(DATE, order.getDate(), JDBCType.DATE.getVendorTypeNumber());
         mapSqlParameterSource.addValue(STATUS, order.getStatus().name(), 12);
         return mapSqlParameterSource;
     }

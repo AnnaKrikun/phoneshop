@@ -1,10 +1,10 @@
-package com.es.core.configurer.order;
+package com.es.core.preparer.order;
 
-import com.es.core.configurer.phone.PhoneResultExtractor;
 import com.es.core.model.order.Order;
 import com.es.core.model.order.OrderItem;
 import com.es.core.model.order.OrderStatus;
 import com.es.core.model.phone.Phone;
+import com.es.core.preparer.phone.PhoneResultExtractor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,6 +25,9 @@ public class OrderResultExtractor extends PhoneResultExtractor {
         order.setContactPhoneNo(resultSet.getString(CONTACT_PHONE_NO));
         order.setAdditionalInfo(resultSet.getString(ADDITIONAL_INFO));
         order.setStatus(OrderStatus.valueOf(resultSet.getString(STATUS)));
+        order.setDate(resultSet.getDate(DATE));
+        order.setId(resultSet.getLong(ORDER_ID));
+        order.setTotalPrice(resultSet.getBigDecimal(TOTAL_PRICE));
         order.setOrderItems(new ArrayList<>());
         return order;
     }
@@ -43,7 +46,7 @@ public class OrderResultExtractor extends PhoneResultExtractor {
     protected void addOrderItem(Order order, Map<Long, OrderItem> orderItemMap, ResultSet resultSet) throws SQLException {
         Long orderItemId = resultSet.getLong(ORDER_ITEM_ID);
         OrderItem orderItem = orderItemMap.get(orderItemId);
-        if (orderItem==null) {
+        if (orderItem == null) {
             orderItem = readPropertiesToOrderItem(order, resultSet);
             order.getOrderItems().add(orderItem);
             orderItemMap.put(orderItemId, orderItem);

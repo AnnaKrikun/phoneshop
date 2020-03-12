@@ -1,6 +1,6 @@
 package com.es.core.constants;
 
-public class FieldConstants {
+public final class FieldConstants {
     public static final String BRAND = "brand";
     public static final String MODEL = "model";
     public static final String PRICE = "price";
@@ -43,5 +43,6 @@ public class FieldConstants {
     public static final String STATUS = "status";
     public static final String QUANTITY = "quantity";
     public static final String ORDER_ID = "orderId";
-    public static final String ORDER_ITEM_ID = "id";
+    public static final String ORDER_ITEM_ID = "orderItemId";
+    public static final String DATE = "date";
 }

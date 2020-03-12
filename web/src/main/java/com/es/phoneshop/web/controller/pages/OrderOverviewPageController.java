@@ -26,7 +26,7 @@ public class OrderOverviewPageController {
 
     @GetMapping
     public String getOrderOverview(@PathVariable Long orderId, Model model) {
-        Order order = orderService.getOrder(orderId).orElseThrow(PageNotFoundException::new);
+        Order order = orderService.get(orderId).orElseThrow(PageNotFoundException::new);
         model.addAttribute(ORDER, order);
         return ORDER_OVERVIEW_PAGE_NAME;
     }

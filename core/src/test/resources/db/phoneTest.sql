@@ -45,3 +45,10 @@ insert into stocks (phoneId, stock, reserved) values (1007, 17, 6);
 insert into stocks (phoneId, stock, reserved) values (1008, 18, 7);
 insert into stocks (phoneId, stock, reserved) values (1009, 19, 8);
 insert into stocks (phoneId, stock, reserved) values (1010, 20, 9);
+
+insert into orders (id, subtotal, deliveryPrice, totalPrice, firstName, lastName, deliveryAddress, contactPhoneNo,additionalInfo,date, status) values (1001, 320, 10, 230, 'Dmitry', 'Koshelev', 'Minsk', '+375291112233',null,null, 'NEW');
+insert into orders (id, subtotal, deliveryPrice, totalPrice, firstName, lastName, deliveryAddress, contactPhoneNo,additionalInfo,date, status) values (1002, 249, 0, 249, 'Anton', 'Ivanov', 'Vitebsk', '+375441234567', null,null,'NEW');
+
+insert into orderItems (id, orderId, phoneId, quantity) values(1001, 1001, 1001, 2);
+insert into orderItems (id, orderId, phoneId, quantity) values(1002, 1001, 1002, 1);
+insert into orderItems (id, orderId, phoneId, quantity) values(1003, 1002, 1003, 1);

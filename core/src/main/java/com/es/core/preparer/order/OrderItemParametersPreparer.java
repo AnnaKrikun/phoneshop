@@ -1,7 +1,7 @@
-package com.es.core.configurer.order;
+package com.es.core.preparer.order;
 
-import com.es.core.configurer.ParametersPreparer;
 import com.es.core.model.order.OrderItem;
+import com.es.core.preparer.ParametersPreparer;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;

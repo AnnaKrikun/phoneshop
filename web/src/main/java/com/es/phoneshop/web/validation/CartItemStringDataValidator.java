@@ -47,8 +47,8 @@ public class CartItemStringDataValidator implements Validator {
         if (quantity <= 0) {
             errors.rejectValue(QUANTITY, QUANTITY_LESS_EQUAL_ZERO);
         }
-        int available = stockService.getStockById(phoneId).get().getStock() -
-                stockService.getStockById(phoneId).get().getReserved();
+        long available = stockService.getByPhoneId(phoneId).get().getStock() -
+                stockService.getByPhoneId(phoneId).get().getReserved();
         if (quantity > available) {
             errors.rejectValue(QUANTITY, QUANTITY_NOT_ENOUGH);
         }

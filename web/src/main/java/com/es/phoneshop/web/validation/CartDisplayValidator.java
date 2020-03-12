@@ -40,8 +40,8 @@ public class CartDisplayValidator implements Validator {
     }
 
     private void checkQuantity(int index, Long quantity, Long phoneId, Errors errors) {
-        int available = stockService.getStockById(phoneId).get().getStock() -
-                stockService.getStockById(phoneId).get().getReserved();
+        long available = stockService.getByPhoneId(phoneId).get().getStock() -
+                stockService.getByPhoneId(phoneId).get().getReserved();
         if (quantity != null && quantity > available) {
             errors.rejectValue(String.format(QUANTITY_FIELD_FORMAT, index), QUANTITY_NOT_ENOUGH);
         }

@@ -1,7 +1,6 @@
 package com.es.core.service.impl;
 
 import com.es.core.dao.PhoneDao;
-import com.es.core.dao.StockDao;
 import com.es.core.exception.OutOfStockException;
 import com.es.core.exception.ProductNotFoundException;
 import com.es.core.model.cart.Cart;
@@ -22,15 +21,13 @@ import java.util.stream.Collectors;
 @Service
 public class SessionCartService extends CalculationServiceImpl implements CartService {
     private Cart cart;
-    private final PhoneDao phoneDao;
-    private final StockDao stockDao;
-    private final StockService stockService;
+    private PhoneDao phoneDao;
+    private StockService stockService;
 
     @Autowired
-    public SessionCartService(Cart cart, PhoneDao phoneDao, StockDao stockDao, StockService stockService) {
+    public SessionCartService(Cart cart, PhoneDao phoneDao, StockService stockService) {
         this.cart = cart;
         this.phoneDao = phoneDao;
-        this.stockDao = stockDao;
         this.stockService = stockService;
     }
 
@@ -48,7 +45,7 @@ public class SessionCartService extends CalculationServiceImpl implements CartSe
     }
 
     private void addCartItem(Phone phoneToAdd, Long quantity, Stock phoneStock) {
-        Integer available = phoneStock.getStock() - phoneStock.getReserved();
+        long available = phoneStock.getStock() - phoneStock.getReserved();
         Optional<CartItem> optionalCartItem = findOptionalCartItem(phoneToAdd.getId());
         if (optionalCartItem.isPresent()) {
             updateCartItem(optionalCartItem.get(), quantity, available);
@@ -57,14 +54,14 @@ public class SessionCartService extends CalculationServiceImpl implements CartSe
         }
     }
 
-    private void addNewCartItem(Phone phoneToAdd, Long quantity, Integer available) {
+    private void addNewCartItem(Phone phoneToAdd, Long quantity, long available) {
         if (quantity > available) {
             throw new OutOfStockException();
         }
         cart.getCartItems().add(new CartItem(phoneToAdd, quantity));
     }
 
-    private void updateCartItem(CartItem cartItem, Long quantity, Integer available) {
+    private void updateCartItem(CartItem cartItem, Long quantity, long available) {
         Long newQuantity = cartItem.getQuantity() + quantity;
         if (quantity > available) {
             throw new OutOfStockException();
@@ -73,7 +70,7 @@ public class SessionCartService extends CalculationServiceImpl implements CartSe
     }
 
     private Stock checkStock(Long phoneId) {
-        Optional<Stock> phoneStock = stockDao.getStockById(phoneId);
+        Optional<Stock> phoneStock = stockService.getByPhoneId(phoneId);
         if (!phoneStock.isPresent()) {
             throw new ProductNotFoundException(phoneId);
         }
@@ -95,7 +92,7 @@ public class SessionCartService extends CalculationServiceImpl implements CartSe
 
     @Override
     public void update(Long phoneId, Long newQuantity) {
-        if (newQuantity.longValue() > 0) {
+        if (newQuantity > 0) {
             Optional<CartItem> cartItemOptional = findOptionalCartItem(phoneId);
             if (cartItemOptional.isPresent()) {
                 CartItem cartItem = cartItemOptional.get();
@@ -126,13 +123,16 @@ public class SessionCartService extends CalculationServiceImpl implements CartSe
 
     @Override
     public void deleteOutOfStock() {
-        List<CartItem> cartItems = cart.getCartItems();
-        cartItems.stream().forEach(cartItem -> {
-            Integer availableStock = stockService.getAvailableStock(cartItem.getPhone().getId());
-            if (availableStock < cartItem.getQuantity()) {
-                remove(cartItem.getPhone().getId());
-            }
-        });
+        Map<Long, Long> mapForUpdate = cart.getCartItems().stream()
+                .collect(Collectors.toMap(cartItem -> cartItem.getPhone().getId(),
+                        cartItem -> leaveOrRemove(cartItem)));
+
+        update(mapForUpdate);
+    }
+
+    private Long leaveOrRemove(CartItem cartItem) {
+        Long availableStock = stockService.getAvailableStock(cartItem.getPhone().getId());
+        return availableStock > cartItem.getQuantity() ? cartItem.getQuantity() : 0L;
     }
 
     @Override
