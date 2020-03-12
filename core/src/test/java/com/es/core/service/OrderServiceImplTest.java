@@ -93,17 +93,19 @@ public class OrderServiceImplTest {
         orderService.placeOrder(order);
 
         verify(orderDao).save(eq(order));
+        verify(orderItemDao).save(order.getOrderItems());
         verify(cartService).clearCart();
     }
 
     @Test(expected = OutOfStockException.class)
     public void shouldThrowOutOfStockExceptionWhenPlaceOrderOutOfStock() {
         Order order = new Order();
-        doThrow(OutOfStockException.class).when(orderDao).save(order);
+        doThrow(OutOfStockException.class).when(orderItemDao).save(order.getOrderItems());
         try {
             orderService.placeOrder(order);
         } finally {
             verify(orderDao).save(eq(order));
+            verify(orderItemDao).save(order.getOrderItems());
         }
     }
 

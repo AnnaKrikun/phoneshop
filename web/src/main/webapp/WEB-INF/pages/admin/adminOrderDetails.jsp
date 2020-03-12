@@ -3,6 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <tags:master pageTitle="Order overview">
 
     <table>
@@ -125,6 +126,7 @@
                     </td>
                     <td>
                         <button type="submit" class="btn btn-info" name="orderStatus" value="DELIVERED">Delivered</button>
+                        <sec:csrfInput/>
                     </td>
                 </c:if>
             </tr>

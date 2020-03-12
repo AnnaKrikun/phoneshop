@@ -10,13 +10,14 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 
 @Component
-@Transactional(rollbackFor = OutOfStockException.class)
+
 public class JdbcOrderItemDao implements OrderItemDao {
     private static final String ORDER_ITEMS_TABLE_NAME = "orderItems";
     private static final String GENERATED_KEY_COLUMN = "id";
@@ -42,14 +43,16 @@ public class JdbcOrderItemDao implements OrderItemDao {
         orderItems.forEach(orderItem -> save(orderItem));
     }
 
+
     @Override
+    @Transactional(propagation= Propagation.REQUIRED, rollbackFor = OutOfStockException.class)
     public void save(OrderItem orderItem) {
         try {
             Map<String, Object> parameters = orderItemParametersPreparer.fillMapForSaving(orderItem);
             Long newId = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
             orderItem.setId(newId);
             stockDao.updateNew(orderItem.getPhone().getId(), orderItem.getQuantity());
-        } catch (DataAccessException e) {
+        } catch (DataAccessException|OutOfStockException e) {
             throw new OutOfStockException();
         }
     }

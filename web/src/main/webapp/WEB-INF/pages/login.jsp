@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
 <head>
     <!-- Bootstrap CSS -->
@@ -31,6 +32,7 @@
                         <label for="password">Password</label>
                         <input type="password" id="password" name="password" class="form-control"/>
                     </p>
+                    <sec:csrfInput/>
                     <button type="submit" class="btn btn-primary">Log in</button>
                 </form>
             </td>

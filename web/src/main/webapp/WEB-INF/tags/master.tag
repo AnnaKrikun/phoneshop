@@ -20,6 +20,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
         var context_path = "<c:out value="${pageContext.request.contextPath}"/>";
+        var csrfParameter = $("meta[name='_csrf_parameter']").attr("content");
+        var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+        var csrfToken = $("meta[name='_csrf']").attr("content");
     </script>
     <script src="<c:url value="/resources/js/ajaxCart.js"/>"></script>
 </head>
@@ -37,6 +40,7 @@
                     <form action="<c:url value="/logout"/>" method="post">
                         <a href="<c:url value="/admin/orders"/>">Orders</a>
                         <span><sec:authentication property="principal.username"/></span>
+                        <sec:csrfInput/>
                         <button class="logout_button" type="submit">Logout</button>
                     </form>
                 </sec:authorize>
