@@ -123,7 +123,6 @@ public class SessionCartServiceTest {
         return phone;
     }
 
-
     @Test
     public void shouldAddPhoneCorrectly() {
         int finalQuantity = 2;
@@ -211,14 +210,24 @@ public class SessionCartServiceTest {
     }
 
     @Test
-    public void shouldDoNothingWhenRemoveNotExistingCartItem() {
+    public void shouldNotRemovePhoneWithNullId() {
+        int expectedSize = 3;
         List<CartItem> cartItems = initNotEmptyCart();
 
+        cartService.remove(null);
+
+        assertEquals(expectedSize, cartItems.size());
+    }
+
+    @Test
+    public void shouldDoNothingWhenRemoveNotExistingCartItem() {
+        int expectedSize = 3;
+        List<CartItem> cartItems = initNotEmptyCart();
         Phone phone = phoneList.get(5);
 
         cartService.remove(phone.getId());
 
-        assertEquals(3, cartItems.size());
+        assertEquals(expectedSize, cartItems.size());
     }
 
     @Test
@@ -226,17 +235,16 @@ public class SessionCartServiceTest {
         List<CartItem> cartItems = initNotEmptyCart();
 
         Map<Long, Long> items = new HashMap<>();
+        items.put(2L, 1L);
         items.put(5L, 1L);
         items.put(4L, 1L);
-        items.put(2L, 1L);
+
 
         cartService.update(items);
 
         verify(mockCart, atLeast(3)).getCartItems();
-        verify(mockPhoneDao).get(2L);
-        verify(mockStockDao).getStockById(2L);
 
-        assertEquals(4, cartItems.size());
+        assertEquals(3, cartItems.size());
     }
 
     private List<CartItem> initNotEmptyCart() {

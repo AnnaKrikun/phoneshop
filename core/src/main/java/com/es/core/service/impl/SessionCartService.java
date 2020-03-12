@@ -82,17 +82,23 @@ public class SessionCartService implements CartService {
     @Override
     public void update(Map<Long, Long> items) {
         for (Map.Entry<Long, Long> item : items.entrySet()) {
-            Optional<CartItem> cartItem = findOptionalCartItem(item.getKey());
-            if (cartItem.isPresent()) {
-                update(item.getKey(), item.getValue());
-            } else {
-                addPhone(item.getKey(), item.getValue());
-            }
+            update(item.getKey(), item.getValue());
         }
     }
 
-    private void update(Long phoneId, Long quantity) {
-        stockDao.update(phoneId, Math.toIntExact(quantity));
+    @Override
+    public void update(Long phoneId, Long newQuantity) {
+        if (newQuantity.compareTo(0L) > 0) {
+            Optional<CartItem> cartItemOptional = findOptionalCartItem(phoneId);
+            if (cartItemOptional.isPresent()) {
+                CartItem cartItem = cartItemOptional.get();
+                cartItem.setQuantity(newQuantity);
+                stockDao.update(phoneId, Math.toIntExact(newQuantity));
+            }
+        } else {
+            remove(phoneId);
+        }
+        recalculateTotals();
     }
 
     @Override

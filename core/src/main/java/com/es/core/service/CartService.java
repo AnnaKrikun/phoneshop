@@ -17,6 +17,8 @@ public interface CartService {
      */
     void update(Map<Long, Long> items);
 
+    void update(Long phoneId, Long quantity);
+
     void remove(Long phoneId);
 
     BigDecimal getCartTotalPrice();

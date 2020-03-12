@@ -14,7 +14,7 @@
     </nav>
     <p>
     <h1>Phones</h1>
-    <table class="table">
+    <table class="table table-hover">
         <thead>
         <tr>
             <th scope="col">Image</th>
@@ -42,17 +42,23 @@
         <c:forEach var="phone" items="${phonePage.phoneList}">
             <tr>
                 <td>
-                    <img src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${phone.imageUrl}">
+                    <a href="<c:url value="/productDetails/${phone.id}"/>">
+                        <img src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${phone.imageUrl}">
+                    </a>
                 </td>
-                <td>${phone.brand}</td>
-                <td>${phone.model}</td>
+                <td><c:out value="${phone.brand}"/></td>
+                <td>
+                    <a href="<c:url value="/productDetails/${phone.id}"/>">
+                        <c:out value="${phone.model}"/>
+                    </a>
+                </td>
                 <td>
                     <c:forEach var="color" items="${phone.colors}">
-                        <p>${color.code}</p>
+                        <c:out value="${color.code}"/><br>
                     </c:forEach>
                 </td>
-                <td>${phone.displaySizeInches}"</td>
-                <td>$ ${phone.price}</td>
+                <td><c:out value="${phone.displaySizeInches}"/>"</td>
+                <td>$ <c:out value="${phone.price}"/></td>
                 <td>
                     <input type="text" class="form-control phone-quantity" name="quantity"/>
                     <input type="hidden" name="phoneId" class="phone-id" value="${phone.id}"/>
@@ -76,7 +82,9 @@
                 </c:when>
                 <c:otherwise>
                     <li class="page-item">
-                        <a class="page-link" href="${pageContext.request.contextPath}/productList?sort=${not empty param.sort ? param.sort : "brand"}&order=${not empty param.order ? param.order : "asc"}&searchQuery=${param.searchQuery}&page=${phonePage.pagination.currentPageNumber-1}" tabindex="-1">
+                        <a class="page-link"
+                           href="${pageContext.request.contextPath}/productList?sort=${not empty param.sort ? param.sort : "brand"}&order=${not empty param.order ? param.order : "asc"}&searchQuery=${param.searchQuery}&page=${phonePage.pagination.currentPageNumber-1}"
+                           tabindex="-1">
                             Previous
                         </a>
                     </li>
@@ -87,14 +95,16 @@
                 <c:choose>
                     <c:when test="${pageNumber eq phonePage.pagination.currentPageNumber}">
                         <li class="page-item active">
-                            <a class="page-link" href="${pageContext.request.contextPath}/productList?sort=${not empty param.sort ? param.sort : "brand"}&order=${not empty param.order ? param.order : "asc"}&searchQuery=${param.searchQuery}&page=${pageNumber}">
+                            <a class="page-link"
+                               href="${pageContext.request.contextPath}/productList?sort=${not empty param.sort ? param.sort : "brand"}&order=${not empty param.order ? param.order : "asc"}&searchQuery=${param.searchQuery}&page=${pageNumber}">
                                     ${pageNumber}
                             </a>
                         </li>
                     </c:when>
                     <c:otherwise>
                         <li class="page-item">
-                            <a class="page-link" href="${pageContext.request.contextPath}/productList?sort=${not empty param.sort ? param.sort : "brand"}&order=${not empty param.order ? param.order : "asc"}&searchQuery=${param.searchQuery}&page=${pageNumber}">
+                            <a class="page-link"
+                               href="${pageContext.request.contextPath}/productList?sort=${not empty param.sort ? param.sort : "brand"}&order=${not empty param.order ? param.order : "asc"}&searchQuery=${param.searchQuery}&page=${pageNumber}">
                                     ${pageNumber}
                             </a>
                         </li>
@@ -109,7 +119,8 @@
                 </c:when>
                 <c:otherwise>
                     <li class="page-item">
-                        <a class="page-link" href="${pageContext.request.contextPath}/productList?sort=${not empty param.sort ? param.sort : "brand"}&order=${not empty param.order ? param.order : "asc"}&searchQuery=${param.searchQuery}&page=${phonePage.pagination.currentPageNumber+1}">
+                        <a class="page-link"
+                           href="${pageContext.request.contextPath}/productList?sort=${not empty param.sort ? param.sort : "brand"}&order=${not empty param.order ? param.order : "asc"}&searchQuery=${param.searchQuery}&page=${phonePage.pagination.currentPageNumber+1}">
                             Next
                         </a>
                     </li>

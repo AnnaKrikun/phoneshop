@@ -12,9 +12,9 @@ import org.springframework.validation.Validator;
 public class CartItemStringDataValidator implements Validator {
     private static final String QUANTITY = "quantityString";
     private static final String PHONE_ID = "phoneIdString";
-    private static final String PHONE_ID_IS_EMPTY = "PhoneId is empty!";
-    private static final String QUANTITY_IS_EMPTY = "Quantity is empty!";
-    private static final String QUANTITY_LESS_EQUAL_ZERO = "Quantity <= 0 !";
+    private static final String PHONE_ID_IS_EMPTY = "PhoneId can't empty!";
+    private static final String QUANTITY_IS_EMPTY = "Quantity can't be empty!";
+    private static final String QUANTITY_LESS_EQUAL_ZERO = "Quantity can't be less than 1!";
     private static final String QUANTITY_NOT_ENOUGH = "Not enough quantity!";
     private static final String NOT_NUMBER = "Not a number!";
 
@@ -43,7 +43,7 @@ public class CartItemStringDataValidator implements Validator {
         }
     }
 
-    private void checkQuantity(long quantity, long phoneId, Errors errors) {
+    private void checkQuantity(Long quantity, Long phoneId, Errors errors) {
         if (quantity <= 0) {
             errors.rejectValue(QUANTITY, QUANTITY_LESS_EQUAL_ZERO);
         }

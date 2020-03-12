@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import static com.es.phoneshop.web.constants.ControllerConstants.AJAX_CART_MAPPING;
+
 @Controller
-@RequestMapping(value = "/ajaxCart", produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(value = AJAX_CART_MAPPING, produces = {MediaType.APPLICATION_JSON_VALUE})
 public class AjaxCartController {
     private static final String SUCCESS = "Added successfully!";
     private static final String ERROR = "Error!";
@@ -33,6 +35,14 @@ public class AjaxCartController {
         this.cartItemStringDataValidator = cartItemStringDataValidator;
     }
 
+/*    private final Validator cartLongDataValidator;
+
+    @Autowired
+    public AjaxCartController(@Qualifier("cartLongDataValidator") Validator cartLongDataValidator) {
+        this.cartLongDataValidator = cartLongDataValidator;
+    }*/
+
+
     @PostMapping(produces = "application/json")
     public @ResponseBody
     CartStatus addPhone(@RequestBody @Valid CartItemStringData cartItemStringData, BindingResult bindingResult) {
@@ -45,6 +55,20 @@ public class AjaxCartController {
         String error = errorMessageCreator.createErrorMessage(bindingResult);
         return createCartStatus(false, error, null);
     }
+
+/*
+    @PostMapping(produces = "application/json")
+    public @ResponseBody
+    CartStatus addPhone(@RequestBody @Valid CartItemLongData cartItemLongData, BindingResult bindingResult) {
+        cartLongDataValidator.validate(cartItemLongData, bindingResult);
+        if (!bindingResult.hasErrors()) {
+            cartService.addPhone(cartItemLongData.getPhoneId(), cartItemLongData.getQuantity());
+            return createCartStatus(true, null, SUCCESS);
+        }
+        String error = errorMessageCreator.createErrorMessage(bindingResult);
+        return createCartStatus(false, error, null);
+    }
+*/
 
     @ExceptionHandler({InvalidFormatException.class, ProductNotFoundException.class, IllegalStateException.class})
     public @ResponseBody
