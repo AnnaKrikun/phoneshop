@@ -1,21 +1,21 @@
 package com.es.phoneshop.web.exception;
 
 public class PageNotFoundException extends RuntimeException {
-    private Long phoneId;
+    private Long id;
 
     public PageNotFoundException() {
     }
 
     public PageNotFoundException(Long phoneId) {
-        this.phoneId = phoneId;
+        this.id = phoneId;
     }
 
     public PageNotFoundException(String message, Long phoneId) {
         super(message);
-        this.phoneId = phoneId;
+        this.id = phoneId;
     }
 
-    public Long getPhoneId() {
-        return phoneId;
+    public Long getId() {
+        return id;
     }
 }

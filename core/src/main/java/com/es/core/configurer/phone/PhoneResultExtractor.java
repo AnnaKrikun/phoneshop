@@ -1,4 +1,4 @@
-package com.es.core.configurer;
+package com.es.core.configurer.phone;
 
 import com.es.core.model.phone.Color;
 import com.es.core.model.phone.Phone;
@@ -14,7 +14,7 @@ public class PhoneResultExtractor {
     protected Phone readPropertiesToPhone(ResultSet resultSet) throws SQLException {
         Phone phone = new Phone();
 
-        phone.setId(resultSet.getLong(ID));
+        phone.setId(resultSet.getLong(PHONE_ID));
         phone.setBrand(resultSet.getString(BRAND));
         phone.setModel(resultSet.getString(MODEL));
         phone.setPrice(resultSet.getBigDecimal(PRICE));

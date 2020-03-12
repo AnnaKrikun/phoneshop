@@ -1,7 +1,7 @@
 package com.es.core.dao.impl;
 
-import com.es.core.configurer.PhoneListResultSetExtractor;
-import com.es.core.configurer.PhoneParametersPreparer;
+import com.es.core.configurer.phone.PhoneListResultSetExtractor;
+import com.es.core.configurer.phone.PhoneParametersPreparer;
 import com.es.core.dao.ColorDao;
 import com.es.core.dao.PhoneDao;
 import com.es.core.model.phone.Phone;
@@ -73,14 +73,16 @@ public class JdbcPhoneDao implements PhoneDao {
     private PhoneListResultSetExtractor phoneListResultSetExtractor;
 
     @Autowired
-    public JdbcPhoneDao(ColorDao colorDao, JdbcTemplate jdbcTemplate, SimpleJdbcInsert simpleJdbcInsert,
+    public JdbcPhoneDao(ColorDao colorDao, JdbcTemplate jdbcTemplate,
                         PhoneParametersPreparer phoneParametersPreparer,
                         PhoneListResultSetExtractor phoneListResultSetExtractor) {
         this.colorDao = colorDao;
         this.jdbcTemplate = jdbcTemplate;
         this.parametersPreparer = phoneParametersPreparer;
         this.phoneListResultSetExtractor = phoneListResultSetExtractor;
-        this.simpleJdbcInsert = simpleJdbcInsert;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("phones")
+                .usingGeneratedKeyColumns("id");
     }
 
 

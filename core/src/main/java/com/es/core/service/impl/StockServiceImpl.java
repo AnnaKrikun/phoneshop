@@ -39,7 +39,11 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public Integer getAvailableStock(Stock stock) {
-        return stock.getStock() - stock.getReserved();
+    public Integer getAvailableStock(Long phoneId) {
+        Optional<Stock> stock = getStockById(phoneId);
+        if (stock.isPresent()) {
+            return stock.get().getStock() - stock.get().getReserved();
+        }
+        return 0;
     }
 }

@@ -28,29 +28,29 @@
         <form:form method="post" modelAttribute="cartDisplay">
             <input type="hidden" name="_method" value="PUT"/>
             <input type="hidden" name="phoneId"/>
-            <c:forEach var="cartDisplayItem" items="${cartDisplay.cartDisplayItems}" varStatus="i">
+            <c:forEach var="orderItem" items="${cartDisplay.cartDisplayItems}" varStatus="i">
                 <tr>
                     <td>
-                        <a href="<c:url value="/productDetails/${cartDisplayItem.phoneId}"/>">
-                            <img src="<c:url value="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${cartDisplayItem.imageUrl}"/>"
+                        <a href="<c:url value="/productDetails/${orderItem.phoneId}"/>">
+                            <img src="<c:url value="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${orderItem.imageUrl}"/>"
                                  style="width: 72px; height: 72px;">
                         </a>
                     </td>
                     <td>
-                        <c:out value="${cartDisplayItem.brand}"/>
+                        <c:out value="${orderItem.brand}"/>
                     </td>
                     <td>
-                        <a href="<c:url value="/productDetails/${cartDisplayItem.phoneId}"/>">
-                            <c:out value="${cartDisplayItem.model}"/>
+                        <a href="<c:url value="/productDetails/${orderItem.phoneId}"/>">
+                            <c:out value="${orderItem.model}"/>
                         </a>
                     </td>
                     <td>
-                        <c:forEach var="color" items="${cartDisplayItem.colors}">
+                        <c:forEach var="color" items="${orderItem.colors}">
                             <c:out value="${color.code}"/><br>
                         </c:forEach>
                     </td>
                     <td>
-                        <c:out value="${cartDisplayItem.displaySizeInches}"/>"
+                        <c:out value="${orderItem.displaySizeInches}"/>"
                     </td>
                     <td>
                         <form:hidden path="cartDisplayItems[${i.index}].phoneId"/>
@@ -60,12 +60,12 @@
                         </div>
                     </td>
                     <td>
-                        $<c:out value="${cartDisplayItem.price}"/>
+                        $<c:out value="${orderItem.price}"/>
                     </td>
                     <td>
                         <button type="submit" name="remove" class="btn btn-dark"
                                 onclick="return onDeletePhone(<c:out
-                                        value="${cartDisplayItem.phoneId}"/>);">
+                                        value="${orderItem.phoneId}"/>);">
                             Remove
                         </button>
                     </td>

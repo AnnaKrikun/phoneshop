@@ -1,14 +1,17 @@
 package com.es.core.model.order;
 
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class Order
-{
+public class Order {
     private Long id;
     private List<OrderItem> orderItems;
     /**
-     *  A sum of order item prices;
+     * A sum of order item prices;
      */
     private BigDecimal subtotal;
     private BigDecimal deliveryPrice;
@@ -17,12 +20,28 @@ public class Order
      */
     private BigDecimal totalPrice;
 
+    @NotEmpty(message = "First name is required!")
+    @Pattern(regexp = "[a-zA-Z]{0,40}", message = "Wrong format!")
     private String firstName;
+
+    @NotEmpty(message = "Last name is required!")
+    @Pattern(regexp = "[a-zA-Z]{0,40}", message = "Wrong format!")
     private String lastName;
+
+    @NotEmpty(message = "Address is required!")
+    @Length(max = 200, message = "Wrong format!")
     private String deliveryAddress;
+
+    @NotEmpty(message = "Contact phone number is required!")
+    @Pattern(regexp = "(\\+*)\\d{7,12}", message = "Wrong format!")
     private String contactPhoneNo;
 
+    @Length(max = 5000, message = "Too long info!")
+    private String additionalInfo;
+
     private OrderStatus status;
+
+    public Order() {}
 
     public Long getId() {
         return id;
@@ -102,5 +121,13 @@ public class Order
 
     public void setStatus(OrderStatus status) {
         this.status = status;
+    }
+
+    public String getAdditionalInfo() {
+        return additionalInfo;
+    }
+
+    public void setAdditionalInfo(String additionalInfo) {
+        this.additionalInfo = additionalInfo;
     }
 }
