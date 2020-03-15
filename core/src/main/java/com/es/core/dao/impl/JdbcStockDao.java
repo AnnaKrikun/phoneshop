@@ -4,6 +4,7 @@ import com.es.core.dao.StockDao;
 import com.es.core.exception.OutOfStockException;
 import com.es.core.model.order.OrderStatus;
 import com.es.core.model.phone.Stock;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,6 +18,8 @@ import java.util.Optional;
 
 @Component
 public class JdbcStockDao implements StockDao {
+    Logger logger = Logger.getLogger(JdbcStockDao.class);
+
     private static final String SELECT_STOCKS_BY_ID = "select * from stocks where phoneId in (:phoneIds)";
     private static final String SELECT_POSITIVE_STOCKS_BY_ID = "select * from stocks where phoneId in (:phoneIds) " +
             " and stock > 0";
@@ -28,6 +31,7 @@ public class JdbcStockDao implements StockDao {
     private static final String PHONE_IDS = "phoneIds";
     private static final String UPDATE_REJECTED_STOCK_BY_ID = "update stocks set reserved = reserved - ? " +
             " where phoneId = ?";
+    private static final String OUT_OF_STOCK_EXCEPTION = "Out of stock exception";
 
     private JdbcTemplate jdbcTemplate;
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -68,6 +72,7 @@ public class JdbcStockDao implements StockDao {
     public void updateNew(Long phoneId, Long reserved) {
         int rowsUpdated = jdbcTemplate.update(UPDATE_STOCK_BY_ID, new Object[]{reserved, phoneId, reserved});
         if (rowsUpdated == 0) {
+            logger.error(OUT_OF_STOCK_EXCEPTION);
             throw new OutOfStockException();
         }
     }
