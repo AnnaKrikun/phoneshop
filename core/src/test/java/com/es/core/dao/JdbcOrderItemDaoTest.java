@@ -5,7 +5,6 @@ import com.es.core.model.order.Order;
 import com.es.core.model.order.OrderItem;
 import com.es.core.model.phone.Phone;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +22,14 @@ import java.util.List;
 public class JdbcOrderItemDaoTest {
     private static final String COUNT_ORDER_ITEMS = "select count (*) from orderItems";
     private static final Long ADDED_ORDER_ITEM = 1L;
-    private static final String ERROR_IN_PHONE_SAVE = "Error: Number of added / found orderItems = ";;
+    private static final String ERROR_IN_PHONE_SAVE = "Error: Number of added / found orderItems = ";
+
     private static final Long ADDED_ORDER_ITEMS = 2L;
     @Autowired
     private OrderItemDao orderItemDao;
 
     @Autowired
     private JdbcTemplate jdbcTemplateTest;
-
-    @Autowired
-    private StockDao stockDao;
 
     private OrderItem orderItem;
     private Phone phone;
@@ -69,7 +66,6 @@ public class JdbcOrderItemDaoTest {
     @Test(expected = OutOfStockException.class)
     @DirtiesContext
     public void shouldThrowOutOfStockWhenAddOutOfStock() {
-        Long amountBeforeSave = jdbcTemplateTest.queryForObject(COUNT_ORDER_ITEMS, Long.class);
 
         phone.setId(1004L);
         orderItem.setPhone(phone);

@@ -5,7 +5,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.util.Date;
 import java.util.List;
 
@@ -22,29 +21,30 @@ public class Order {
      */
     private BigDecimal totalPrice;
 
-    @NotEmpty(message = "First name is required!")
-    @Pattern(regexp = "[a-zA-Z]{0,40}", message = "Wrong format!")
+    @NotEmpty(message = "{first.name.required}")
+    @Pattern(regexp = "[a-zA-Z]{0,40}", message = "{wrong.format}")
     private String firstName;
 
-    @NotEmpty(message = "Last name is required!")
-    @Pattern(regexp = "[a-zA-Z]{0,40}", message = "Wrong format!")
+    @NotEmpty(message = "{last.name.required}")
+    @Pattern(regexp = "[a-zA-Z]{0,40}", message = "{wrong.format}")
     private String lastName;
 
-    @NotEmpty(message = "Address is required!")
-    @Length(max = 200, message = "Wrong format!")
+    @NotEmpty(message = "{address.required}")
+    @Length(max = 200, message = "{wrong.format}")
     private String deliveryAddress;
 
-    @NotEmpty(message = "Contact phone number is required!")
-    @Pattern(regexp = "(\\+*)\\d{7,12}", message = "Wrong format!")
+    @NotEmpty(message = "{phone.required}")
+    @Pattern(regexp = "(\\+*)\\d{7,12}", message = "{wrong.format}")
     private String contactPhoneNo;
 
-    @Length(max = 5000, message = "Too long info!")
+    @Length(max = 5000, message = "{too.long}")
     private String additionalInfo;
 
     private OrderStatus status;
     private Date date;
 
-    public Order() {}
+    public Order() {
+    }
 
     public Long getId() {
         return id;
@@ -54,9 +54,13 @@ public class Order {
         this.id = id;
     }
 
-    public Date getDate() { return date; }
+    public Date getDate() {
+        return date;
+    }
 
-    public void setDate(Date date) { this.date = date; }
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
     public List<OrderItem> getOrderItems() {
         return orderItems;

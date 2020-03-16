@@ -8,9 +8,11 @@ public class ControllerConstants {
     public static final String PRODUCT_DETAILS_MAPPING = "/productDetails/{phoneId}";
     public static final String PRODUCT_LIST_MAPPING = "/productList";
     public static final String AJAX_CART_MAPPING = "/ajaxCart";
+    public static final String LOGIN = "/login";
 
     public static final String REDIRECT_ORDER_OVERVIEW ="redirect:orderOverview/";
     public static final String REDIRECT_ADMIN_ORDER_DETAILS ="redirect:/admin/orders/";
+    public static final String REDIRECT_ADMIN_ORDERS_PAGE_NAME = "redirect:admin/orders";
 
     public static final String REDIRECT_CART_PAGE = "redirect:/cart";
     public static final String CART_PAGE_NAME = "cart";
@@ -22,4 +24,5 @@ public class ControllerConstants {
     public static final String ORDER_OVERVIEW_PAGE_NAME = "orderOverview";
     public static final String ADMIN_ORDER_DETAILS_PAGE_NAME = "admin/adminOrderDetails";
     public static final String BAD_UPDATE_STATUS_REQUEST_PAGE_NAME = "errors/errorUpdateStatus";
+    public static final String LOGIN_PAGE_NAME = "login";
 }

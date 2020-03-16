@@ -7,6 +7,7 @@ import com.es.core.model.order.OrderStatus;
 import com.es.core.preparer.order.OrderListResultExtractor;
 import com.es.core.preparer.order.OrderParametersPreparer;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,6 +22,8 @@ import java.util.Optional;
 @Component
 @Transactional(rollbackFor = OutOfStockException.class)
 public class JdbcOrderDao implements OrderDao {
+    Logger logger = Logger.getLogger(JdbcOrderDao.class);
+
     private static final String SELECT_ORDER_BY_ID_QUERY = "select orders.id AS orderId, subtotal, deliveryPrice," +
             "totalPrice, firstName, lastName, deliveryAddress, contactPhoneNo, date, status," +
             "additionalInfo, orderItems.id AS orderItemId, quantity," +
@@ -53,6 +56,7 @@ public class JdbcOrderDao implements OrderDao {
     private final static String UPDATE_ORDER_STATUS = "update orders set status = ? where id = ?";
     private static final String ORDERS_TABLE_NAME = "orders";
     private static final String GENERATED_KEY_COLUMN = "id";
+    private static final String OUT_OF_STOCK_EXCEPTION = "Out of stock exception";
 
     private JdbcTemplate jdbcTemplate;
     private OrderListResultExtractor orderListResultExtractor;
@@ -107,7 +111,8 @@ public class JdbcOrderDao implements OrderDao {
             Long orderId = simpleJdbcInsert.executeAndReturnKey(sqlParameterSource).longValue();
             order.setId(orderId);
         } catch (DataAccessException e) {
-            throw new OutOfStockException();
+            logger.error(OUT_OF_STOCK_EXCEPTION, e);
+            throw new OutOfStockException(e);
         }
     }
 }

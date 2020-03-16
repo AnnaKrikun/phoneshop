@@ -10,12 +10,12 @@ import java.util.Collections;
 import java.util.Set;
 
 public class CartItemDisplay {
-    @NotNull(message = "Phone id can't be empty!")
-    @Min(value = 1L, message = "Phone id can't be less than 1!")
+    @NotNull(message = "{id.required}")
+    @Min(value = 1L, message = "{id.negative}")
     private Long phoneId;
 
-    @NotNull(message = "Quantity can't be empty!")
-    @Min(value = 0L, message = "Quantity can't be less than zero!")
+    @NotNull(message = "{quantity.required}")
+    @Min(value = 0L, message = "{quantity.negative}")
     private Long quantity = 0L;
 
     private String imageUrl;

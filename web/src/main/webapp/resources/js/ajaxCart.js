@@ -7,11 +7,15 @@ $(document).ready(function () {
         requestData["phoneIdString"] = id;
         requestData["quantityString"] = quantity;
 
+        var headers = {};
+        headers[csrfHeader] = csrfToken;
+
         $.ajax({
             url: context_path + "/ajaxCart",
             type: "POST",
             contentType: "application/json;charset=UTF-8",
             dataType: "json",
+            headers: headers,
             data: JSON.stringify(requestData),
             success: function (cartStatus) {
                 if (cartStatus.isValid) {
