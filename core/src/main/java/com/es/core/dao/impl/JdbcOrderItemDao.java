@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-
 public class JdbcOrderItemDao implements OrderItemDao {
     Logger logger = Logger.getLogger(JdbcOrderItemDao.class);
 
@@ -49,16 +48,16 @@ public class JdbcOrderItemDao implements OrderItemDao {
 
 
     @Override
-    @Transactional(propagation= Propagation.REQUIRED, rollbackFor = OutOfStockException.class)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = OutOfStockException.class)
     public void save(OrderItem orderItem) {
         try {
             Map<String, Object> parameters = orderItemParametersPreparer.fillMapForSaving(orderItem);
             Long newId = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
             orderItem.setId(newId);
             stockDao.updateNew(orderItem.getPhone().getId(), orderItem.getQuantity());
-        } catch (DataAccessException|OutOfStockException e) {
-            logger.error(OUT_OF_STOCK_EXCEPTION);
-            throw new OutOfStockException();
+        } catch (DataAccessException | OutOfStockException e) {
+            logger.error(OUT_OF_STOCK_EXCEPTION, e);
+            throw new OutOfStockException(e);
         }
     }
 }

@@ -111,8 +111,8 @@ public class JdbcOrderDao implements OrderDao {
             Long orderId = simpleJdbcInsert.executeAndReturnKey(sqlParameterSource).longValue();
             order.setId(orderId);
         } catch (DataAccessException e) {
-            logger.error(OUT_OF_STOCK_EXCEPTION);
-            throw new OutOfStockException();
+            logger.error(OUT_OF_STOCK_EXCEPTION, e);
+            throw new OutOfStockException(e);
         }
     }
 }
