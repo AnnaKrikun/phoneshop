@@ -11,6 +11,8 @@ public interface CartService {
 
     void addPhone(Long phoneId, Long quantity);
 
+    void addPhones(Map<Long, Long> items);
+
     /**
      * @param items key: {@link com.es.core.model.phone.Phone#id}
      *              value: quantity

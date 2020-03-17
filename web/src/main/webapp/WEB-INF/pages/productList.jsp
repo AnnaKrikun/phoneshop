@@ -13,6 +13,7 @@
         </form>
     </nav>
     <p>
+        <a href="${pageContext.servletContext.contextPath}/quickProductEntry">Quick product entry</a>
     <h1>Phones</h1>
     <table class="table table-hover">
         <thead>

@@ -44,6 +44,13 @@ public class SessionCartService extends CalculationServiceImpl implements CartSe
         recalculateTotals();
     }
 
+    @Override
+    public void addPhones(Map<Long, Long> items) {
+        for (Map.Entry<Long, Long> entry : items.entrySet()) {
+            addPhone(entry.getKey(), entry.getValue());
+        }
+    }
+
     private void addCartItem(Phone phoneToAdd, Long quantity, Stock phoneStock) {
         long available = phoneStock.getStock() - phoneStock.getReserved();
         Optional<CartItem> optionalCartItem = findOptionalCartItem(phoneToAdd.getId());
