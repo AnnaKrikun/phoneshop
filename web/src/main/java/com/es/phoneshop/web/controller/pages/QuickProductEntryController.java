@@ -3,7 +3,6 @@ package com.es.phoneshop.web.controller.pages;
 import com.es.core.model.cart.Cart;
 import com.es.core.service.CartService;
 import com.es.phoneshop.web.cart.QuickProductEntry;
-import com.es.phoneshop.web.errors.ErrorMessageCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,14 +28,13 @@ public class QuickProductEntryController {
     private static final String CART = "cart";
     private static final String QUICK_PRODUCT_ENTRY = "quickProductEntry";
     private static final String ERRORS = "errors";
+    private static final Object ERROR_MESSAGE = "Errors!";
 
     @Value("10")
     private int inputsCount;
 
     @Resource
     private CartService cartService;
-    @Resource
-    private ErrorMessageCreator errorMessageCreator;
 
     private Validator quickProductEntryValidator;
 
@@ -60,7 +58,7 @@ public class QuickProductEntryController {
                                  Model model) {
         quickProductEntryValidator.validate(quickProductEntry, bindingResult);
         if (bindingResult.hasErrors()) {
-            addErrorAttribute(model, bindingResult);
+            model.addAttribute(ERRORS, ERROR_MESSAGE);
             addAttributes(model, quickProductEntry);
             return QUICK_PRODUCT_ENTRY_PAGE_NAME;
         }
@@ -75,8 +73,4 @@ public class QuickProductEntryController {
         model.addAttribute(INPUTS_COUNT, inputsCount);
     }
 
-    private void addErrorAttribute(Model model, BindingResult bindingResult) {
-        String errors = errorMessageCreator.createErrorMessage(bindingResult);
-        model.addAttribute(ERRORS, errors);
-    }
 }

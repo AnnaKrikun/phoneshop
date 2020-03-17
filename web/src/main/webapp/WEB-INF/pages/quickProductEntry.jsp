@@ -11,12 +11,30 @@
     </c:if>
     <form:form method="post" action="${pageContext.servletContext.contextPath}/quickProductEntry/add"
                modelAttribute="quickProductEntry">
-        <c:forEach begin="${0}" end="${inputsCount}" varStatus="i">
-            <form:label path="phoneIds">PhoneId:</form:label>
-            <form:input path="phoneIds" name="phonesId${i.index}"/>
-            <form:label path="phoneQuantities">quantity:</form:label>
-            <form:input path="phoneQuantities" name="quantities${i.index}"/><br>
-        </c:forEach>
-        <button class="btn btn-dark add-to-cart">Add 2 cart</button>
+        <table>
+            <c:forEach begin="${0}" end="${inputsCount}" varStatus="i">
+                <tr>
+                    <td>
+                        <form:label path="quickProductEntryItems[${i.index}].phoneId">PhoneId:</form:label>
+                    </td>
+                    <td>
+                        <form:input path="quickProductEntryItems[${i.index}].phoneId" class="form-control"/>
+                        <div class="error-message" id="error-message">
+                            <form:errors path="quickProductEntryItems[${i.index}].phoneId"/>
+                        </div>
+                    </td>
+                    <td>
+                        <form:label path="quickProductEntryItems[${i.index}].phoneQuantity">quantity:</form:label>
+                    </td>
+                    <td>
+                        <form:input path="quickProductEntryItems[${i.index}].phoneQuantity" class="form-control"/>
+                        <div class="error-message" id="error-message">
+                            <form:errors path="quickProductEntryItems[${i.index}].phoneQuantity"/>
+                        </div>
+                    </td>
+                </tr>
+            </c:forEach>
+            <button class="btn btn-dark add-to-cart">Add 2 cart</button>
+        </table>
     </form:form>
 </tags:master>
